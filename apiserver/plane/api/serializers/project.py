@@ -2,12 +2,11 @@
 from rest_framework import serializers
 
 # Module imports
-from plane.db.models import Project, ProjectIdentifier, WorkspaceMember, State, Estimate
+from plane.db.models import Project, ProjectIdentifier, WorkspaceMember
 from .base import BaseSerializer
 
 
 class ProjectSerializer(BaseSerializer):
-
     total_members = serializers.IntegerField(read_only=True)
     total_cycles = serializers.IntegerField(read_only=True)
     total_modules = serializers.IntegerField(read_only=True)
@@ -21,7 +20,7 @@ class ProjectSerializer(BaseSerializer):
         fields = "__all__"
         read_only_fields = [
             "id",
-            'emoji',
+            "emoji",
             "workspace",
             "created_at",
             "updated_at",

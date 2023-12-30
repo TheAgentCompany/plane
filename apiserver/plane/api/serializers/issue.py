@@ -21,11 +21,13 @@ from plane.db.models import (
     IssueActivity,
     ProjectMember,
 )
+
 from .base import BaseSerializer
 from .cycle import CycleSerializer, CycleLiteSerializer
 from .module import ModuleSerializer, ModuleLiteSerializer
 from .user import UserLiteSerializer
 from .state import StateLiteSerializer
+
 
 class IssueSerializer(BaseSerializer):
     assignees = serializers.ListField(
@@ -67,13 +69,13 @@ class IssueSerializer(BaseSerializer):
             and data.get("start_date", None) > data.get("target_date", None)
         ):
             raise serializers.ValidationError("Start date cannot exceed target date")
-        
+
         try:
-            if(data.get("description_html", None) is not None):
+            if data.get("description_html", None) is not None:
                 parsed = html.fromstring(data["description_html"])
-                parsed_str = html.tostring(parsed, encoding='unicode')
+                parsed_str = html.tostring(parsed, encoding="unicode")
                 data["description_html"] = parsed_str
-            
+
         except Exception as e:
             raise serializers.ValidationError(f"Invalid HTML: {str(e)}")
 
@@ -324,11 +326,11 @@ class IssueCommentSerializer(BaseSerializer):
 
     def validate(self, data):
         try:
-            if(data.get("comment_html", None) is not None):
+            if data.get("comment_html", None) is not None:
                 parsed = html.fromstring(data["comment_html"])
-                parsed_str = html.tostring(parsed, encoding='unicode')
+                parsed_str = html.tostring(parsed, encoding="unicode")
                 data["comment_html"] = parsed_str
-            
+
         except Exception as e:
             raise serializers.ValidationError(f"Invalid HTML: {str(e)}")
         return data
@@ -362,7 +364,6 @@ class ModuleIssueSerializer(BaseSerializer):
 
 
 class LabelLiteSerializer(BaseSerializer):
-
     class Meta:
         model = Label
         fields = [
