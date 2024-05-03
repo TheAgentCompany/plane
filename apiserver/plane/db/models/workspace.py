@@ -128,6 +128,29 @@ def slug_validator(value):
         raise ValidationError("Slug is not valid")
 
 
+class Site(BaseModel):
+    name = models.CharField(max_length=80)
+    description = models.TextField(blank=True)
+    use_case = models.TextField(blank=True)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="sites",
+    )
+    domain = models.TextField(blank=True)
+    user_count = models.IntegerField(default=1)
+
+    def __str__(self):
+        """Return name of site"""
+        return self.name
+
+    class Meta:
+        verbose_name = "Site"
+        verbose_name_plural = "Sites"
+        db_table = "sites"
+        ordering = ("-created_at",)
+
+
 class Workspace(BaseModel):
     name = models.CharField(max_length=80, verbose_name="Workspace Name")
     logo = models.URLField(verbose_name="Logo", blank=True, null=True)
@@ -145,10 +168,24 @@ class Workspace(BaseModel):
         ],
     )
     organization_size = models.CharField(max_length=20, blank=True, null=True)
+    site = models.ForeignKey(
+        "db.Site",
+        on_delete=models.CASCADE,
+        related_name="workspaces",
+        null=True,
+    )
+    is_primary = models.BooleanField(default=False)
 
     def __str__(self):
         """Return name of the Workspace"""
         return self.name
+
+    def save(self, *args, **kwargs):
+        if self.is_primary:
+            Workspace.objects.filter(site_id=self.site_id).update(
+                is_primary=False
+            )
+        super(Workspace, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Workspace"
