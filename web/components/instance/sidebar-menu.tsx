@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Image, BrainCog, Cog, Lock, Mail } from "lucide-react";
+import { Image, BrainCog, Cog, Lock, Mail, FileText } from "lucide-react";
 // hooks
 import { Tooltip } from "@plane/ui";
 import { useApplication } from "@/hooks/store";
@@ -37,6 +37,12 @@ const INSTANCE_ADMIN_LINKS = [
     name: "Images in Plane",
     description: "Allow third-party image libraries",
     href: `/god-mode/image`,
+  },
+  {
+    Icon: FileText,
+    name: "Pages",
+    description: "Configure your documents",
+    href: `/god-mode/pages`,
   },
 ];
 
