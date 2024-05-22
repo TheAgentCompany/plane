@@ -36,6 +36,10 @@ http {
             proxy_pass http://admin:3001/god-mode/;
         }
 
+        location /god-mode {
+            proxy_pass http://godmode:3000/;
+        }
+
         location /api/ {
             proxy_http_version 1.1;
             proxy_set_header Upgrade ${dollar}http_upgrade;

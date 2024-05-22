@@ -10,6 +10,7 @@ import { WorkspaceAnalyticsHeader } from "@/components/headers";
 // constants
 import { ANALYTICS_TABS } from "@/constants/analytics";
 import { EmptyStateType } from "@/constants/empty-state";
+import { E_ANALYTICS_EMPTY_STATE } from "@/constants/event-tracker";
 // hooks
 import { useCommandPalette, useEventTracker, useProject, useWorkspace } from "@/hooks/store";
 // layouts
@@ -68,7 +69,7 @@ const AnalyticsPage: NextPageWithLayout = observer(() => {
         <EmptyState
           type={EmptyStateType.WORKSPACE_ANALYTICS}
           primaryButtonOnClick={() => {
-            setTrackElement("Analytics empty state");
+            setTrackElement(E_ANALYTICS_EMPTY_STATE);
             toggleCreateProjectModal(true);
           }}
         />

@@ -2,6 +2,8 @@ import { observer } from "mobx-react";
 import { Plus, PlusIcon } from "lucide-react";
 // hooks
 import { EmptyState } from "@/components/common";
+// constants
+import { E_GLOBAL_ISSUES_EMPTY_STATE } from "@/constants/event-tracker";
 import { useCommandPalette, useEventTracker, useProject } from "@/hooks/store";
 // components
 // assets
@@ -25,7 +27,7 @@ export const GlobalViewEmptyState: React.FC = observer(() => {
             icon: <Plus className="h-4 w-4" />,
             text: "New Project",
             onClick: () => {
-              setTrackElement("All issues empty state");
+              setTrackElement(E_GLOBAL_ISSUES_EMPTY_STATE);
               toggleCreateProjectModal(true);
             },
           }}
@@ -39,7 +41,7 @@ export const GlobalViewEmptyState: React.FC = observer(() => {
             text: "New issue",
             icon: <PlusIcon className="h-3 w-3" strokeWidth={2} />,
             onClick: () => {
-              setTrackElement("All issues empty state");
+              setTrackElement(E_GLOBAL_ISSUES_EMPTY_STATE);
               toggleCreateIssueModal(true);
             },
           }}

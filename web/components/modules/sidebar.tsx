@@ -36,6 +36,8 @@ import { DateRangeDropdown, MemberDropdown } from "@/components/dropdowns";
 import { ArchiveModuleModal, DeleteModuleModal } from "@/components/modules";
 // constant
 import {
+  E_MODULE_SIDEBAR,
+  E_SIDEBAR,
   MODULE_LINK_CREATED,
   MODULE_LINK_DELETED,
   MODULE_LINK_UPDATED,
@@ -101,7 +103,7 @@ export const ModuleDetailsSidebar: React.FC<Props> = observer((props) => {
       .then((res) => {
         captureModuleEvent({
           eventName: MODULE_UPDATED,
-          payload: { ...res, changed_properties: Object.keys(data)[0], element: "Right side-peek", state: "SUCCESS" },
+          payload: { ...res, changed_properties: Object.keys(data)[0], element: E_SIDEBAR, state: "SUCCESS" },
         });
       })
       .catch(() => {
@@ -383,7 +385,7 @@ export const ModuleDetailsSidebar: React.FC<Props> = observer((props) => {
                 )}
                 <CustomMenu.MenuItem
                   onClick={() => {
-                    setTrackElement("Module peek-overview");
+                    setTrackElement(E_MODULE_SIDEBAR);
                     setModuleDeleteModal(true);
                   }}
                 >

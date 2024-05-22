@@ -9,7 +9,7 @@ import { Avatar, AvatarGroup, setPromiseToast } from "@plane/ui";
 import { FavoriteStar } from "@/components/core";
 import { CycleQuickActions } from "@/components/cycles";
 // constants
-import { CYCLE_FAVORITED, CYCLE_UNFAVORITED } from "@/constants/event-tracker";
+import { CYCLE_FAVORITED, CYCLE_UNFAVORITED, E_LIST_LAYOUT } from "@/constants/event-tracker";
 // helpers
 import { renderFormattedDate } from "@/helpers/date-time.helper";
 // hooks
@@ -41,7 +41,7 @@ export const UpcomingCycleListItem: React.FC<Props> = observer((props) => {
       () => {
         captureEvent(CYCLE_FAVORITED, {
           cycle_id: cycleId,
-          element: "List layout",
+          element: E_LIST_LAYOUT,
           state: "SUCCESS",
         });
       }
@@ -71,7 +71,7 @@ export const UpcomingCycleListItem: React.FC<Props> = observer((props) => {
     ).then(() => {
       captureEvent(CYCLE_UNFAVORITED, {
         cycle_id: cycleId,
-        element: "List layout",
+        element: E_LIST_LAYOUT,
         state: "SUCCESS",
       });
     });

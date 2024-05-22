@@ -7,6 +7,7 @@ import { Breadcrumbs, Button } from "@plane/ui";
 // helpers
 import { BreadcrumbLink } from "@/components/common";
 import { ProjectLogo } from "@/components/project";
+import { E_PAGES } from "@/constants/event-tracker";
 import { EUserProjectRoles } from "@/constants/project";
 // constants
 // components
@@ -61,7 +62,7 @@ export const PagesHeader = observer(() => {
             variant="primary"
             size="sm"
             onClick={() => {
-              setTrackElement("Project pages page");
+              setTrackElement(E_PAGES);
               toggleCreatePageModal(true);
             }}
           >

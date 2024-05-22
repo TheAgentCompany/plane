@@ -10,6 +10,7 @@ import { ArchiveIcon, ContextMenu, CustomMenu, TContextMenuItem, TOAST_TYPE, set
 // components
 import { ArchiveIssueModal, CreateUpdateIssueModal, DeleteIssueModal } from "@/components/issues";
 // constants
+import { E_GLOBAL_ISSUES } from "@/constants/event-tracker";
 import { EIssuesStoreType } from "@/constants/issue";
 import { STATE_GROUPS } from "@/constants/state";
 // helpers
@@ -77,7 +78,6 @@ export const AllIssueQuickActions: React.FC<IQuickActionProps> = observer((props
       title: "Edit",
       icon: Pencil,
       action: () => {
-        setTrackElement("Global issues");
         setIssueToEdit(issue);
         setCreateUpdateIssueModal(true);
       },
@@ -87,10 +87,7 @@ export const AllIssueQuickActions: React.FC<IQuickActionProps> = observer((props
       key: "make-a-copy",
       title: "Make a copy",
       icon: Copy,
-      action: () => {
-        setTrackElement("Global issues");
-        setCreateUpdateIssueModal(true);
-      },
+      action: () => setCreateUpdateIssueModal(true),
       shouldRender: isEditingAllowed,
     },
     {
@@ -120,10 +117,7 @@ export const AllIssueQuickActions: React.FC<IQuickActionProps> = observer((props
       key: "delete",
       title: "Delete",
       icon: Trash2,
-      action: () => {
-        setTrackElement("Global issues");
-        setDeleteIssueModal(true);
-      },
+      action: () => setDeleteIssueModal(true),
       shouldRender: isEditingAllowed,
     },
   ];
@@ -173,6 +167,7 @@ export const AllIssueQuickActions: React.FC<IQuickActionProps> = observer((props
                 e.preventDefault();
                 e.stopPropagation();
                 item.action();
+                setTrackElement(E_GLOBAL_ISSUES);
               }}
               className={cn(
                 "flex items-center gap-2",

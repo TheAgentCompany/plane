@@ -5,12 +5,12 @@ import { Dialog, Transition } from "@headlessui/react";
 import { IUser, IImporterService } from "@plane/types";
 // hooks
 import { Button, CustomSearchSelect, TOAST_TYPE, setToast } from "@plane/ui";
-
-import { useProject } from "@/hooks/store";
+// constants
+import { ISSUES_EXPORTED } from "@/constants/event-tracker";
+import { useEventTracker, useProject } from "@/hooks/store";
 // services
 import { ProjectExportService } from "@/services/project";
 // ui
-// types
 
 type Props = {
   isOpen: boolean;
@@ -33,6 +33,7 @@ export const Exporter: React.FC<Props> = observer((props) => {
   const { workspaceSlug } = router.query;
   // store hooks
   const { workspaceProjectIds, getProjectById } = useProject();
+  const { captureEvent } = useEventTracker();
 
   const options = workspaceProjectIds?.map((projectId) => {
     const projectDetails = getProjectById(projectId);
@@ -68,6 +69,11 @@ export const Exporter: React.FC<Props> = observer((props) => {
           mutateServices();
           router.push(`/${workspaceSlug}/settings/exports`);
           setExportLoading(false);
+          captureEvent(ISSUES_EXPORTED, {
+            format: provider,
+            project_ids: value,
+            export_seperate: multiple,
+          });
           setToast({
             type: TOAST_TYPE.SUCCESS,
             title: "Export Successful",

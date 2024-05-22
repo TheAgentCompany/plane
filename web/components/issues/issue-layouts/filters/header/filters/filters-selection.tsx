@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import { Search, X } from "lucide-react";
 import { IIssueFilterOptions, IIssueLabel, IState } from "@plane/types";
-// hooks
+
 import {
   FilterAssignees,
   FilterMentions,
@@ -18,7 +18,9 @@ import {
   FilterModule,
 } from "@/components/issues";
 import { ILayoutDisplayFiltersOptions } from "@/constants/issue";
+// hooks
 import { useAppRouter } from "@/hooks/store";
+import useDebounce from "@/hooks/use-debounce";
 // components
 // types
 // constants
@@ -32,6 +34,7 @@ type Props = {
   states?: IState[] | undefined;
   cycleViewDisabled?: boolean;
   moduleViewDisabled?: boolean;
+  onSearchCapture?: () => void;
 };
 
 export const FilterSelection: React.FC<Props> = observer((props) => {
@@ -44,6 +47,7 @@ export const FilterSelection: React.FC<Props> = observer((props) => {
     states,
     cycleViewDisabled = false,
     moduleViewDisabled = false,
+    onSearchCapture
   } = props;
   // hooks
   const { moduleId, cycleId } = useAppRouter();
@@ -51,6 +55,11 @@ export const FilterSelection: React.FC<Props> = observer((props) => {
   const [filtersSearchQuery, setFiltersSearchQuery] = useState("");
 
   const isFilterEnabled = (filter: keyof IIssueFilterOptions) => layoutDisplayFiltersOptions?.filters.includes(filter);
+  const debouncedValue = useDebounce(filtersSearchQuery, 1500);
+
+  useEffect(() => {
+    if (debouncedValue && onSearchCapture) onSearchCapture();
+  }, [debouncedValue, onSearchCapture]);
 
   return (
     <div className="flex h-full w-full flex-col overflow-hidden">

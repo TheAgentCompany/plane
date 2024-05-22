@@ -6,7 +6,7 @@ import { PlusIcon } from "lucide-react";
 import { IProject, TIssue } from "@plane/types";
 // hooks
 import { setPromiseToast } from "@plane/ui";
-import { ISSUE_CREATED } from "@/constants/event-tracker";
+import { E_Gantt_QUICK_ADD, ISSUE_CREATED } from "@/constants/event-tracker";
 import { cn } from "@/helpers/common.helper";
 import { renderFormattedPayloadDate } from "@/helpers/date-time.helper";
 import { createIssuePayload } from "@/helpers/issue.helper";
@@ -128,15 +128,15 @@ export const GanttQuickAddIssueForm: React.FC<IGanttQuickAddIssueForm> = observe
         .then((res) => {
           captureIssueEvent({
             eventName: ISSUE_CREATED,
-            payload: { ...res, state: "SUCCESS", element: "Gantt quick add" },
-            path: router.asPath,
+            payload: { ...res, state: "SUCCESS", element: E_Gantt_QUICK_ADD },
+            routePath: router.asPath,
           });
         })
         .catch(() => {
           captureIssueEvent({
             eventName: ISSUE_CREATED,
-            payload: { ...payload, state: "FAILED", element: "Gantt quick add" },
-            path: router.asPath,
+            payload: { ...payload, state: "FAILED", element: E_Gantt_QUICK_ADD },
+            routePath: router.asPath,
           });
         });
     }

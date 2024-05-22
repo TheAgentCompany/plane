@@ -7,8 +7,10 @@ import type { IIssueLabel } from "@plane/types";
 import { TOAST_TYPE, setToast } from "@plane/ui";
 // components
 import { AlertModalCore } from "@/components/core";
+// constants
+import { E_LABELS, LABEL_DELETED, LABEL_GROUP_DELETED } from "@/constants/event-tracker";
 // hooks
-import { useLabel } from "@/hooks/store";
+import { useLabel, useEventTracker } from "@/hooks/store";
 
 type Props = {
   isOpen: boolean;
@@ -22,7 +24,8 @@ export const DeleteLabelModal: React.FC<Props> = observer((props) => {
   const router = useRouter();
   const { workspaceSlug, projectId } = router.query;
   // store hooks
-  const { deleteLabel } = useLabel();
+  const { deleteLabel, projectLabelsTree } = useLabel();
+  const { captureEvent } = useEventTracker();
   // states
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
@@ -38,6 +41,21 @@ export const DeleteLabelModal: React.FC<Props> = observer((props) => {
 
     await deleteLabel(workspaceSlug.toString(), projectId.toString(), data.id)
       .then(() => {
+        const labelChildCount = projectLabelsTree?.find((label) => label.id === data.id)?.children?.length || 0;
+        if (labelChildCount > 0) {
+          captureEvent(LABEL_GROUP_DELETED, {
+            group_id: data.id,
+            children_count: labelChildCount,
+            element: E_LABELS,
+            state: "SUCCESS",
+          });
+        } else {
+          captureEvent(LABEL_DELETED, {
+            label_id: data.id,
+            element: E_LABELS,
+            state: "SUCCESS",
+          });
+        }
         handleClose();
       })
       .catch((err) => {

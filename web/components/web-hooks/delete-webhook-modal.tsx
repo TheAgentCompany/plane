@@ -4,8 +4,10 @@ import { useRouter } from "next/router";
 import { TOAST_TYPE, setToast } from "@plane/ui";
 // components
 import { AlertModalCore } from "@/components/core";
+// constants
+import { WEBHOOK_DELETED } from "@/constants/event-tracker";
 // hooks
-import { useWebhook } from "@/hooks/store";
+import { useWebhook, useEventTracker } from "@/hooks/store";
 
 interface IDeleteWebhook {
   isOpen: boolean;
@@ -20,6 +22,7 @@ export const DeleteWebhookModal: FC<IDeleteWebhook> = (props) => {
   const router = useRouter();
   // store hooks
   const { removeWebhook } = useWebhook();
+  const { captureEvent } = useEventTracker();
 
   const { workspaceSlug, webhookId } = router.query;
 
@@ -34,6 +37,9 @@ export const DeleteWebhookModal: FC<IDeleteWebhook> = (props) => {
 
     removeWebhook(workspaceSlug.toString(), webhookId.toString())
       .then(() => {
+        captureEvent(WEBHOOK_DELETED, {
+          webhook_id: webhookId.toString(),
+        });
         setToast({
           type: TOAST_TYPE.SUCCESS,
           title: "Success!",

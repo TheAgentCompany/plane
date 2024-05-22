@@ -43,9 +43,10 @@ export const ProfileLayoutSidebar = observer(() => {
   const workspacesList = Object.values(workspaces ?? {});
 
   // redirect url for normal mode
+  // FIXME:
   const redirectWorkspaceSlug =
-    currentUserSettings?.workspace?.last_workspace_slug ||
-    currentUserSettings?.workspace?.fallback_workspace_slug ||
+    // currentUserSettings?.workspace?.last_workspace_slug ||
+    // currentUserSettings?.workspace?.fallback_workspace_slug ||
     "";
 
   const ref = useRef<HTMLDivElement>(null);

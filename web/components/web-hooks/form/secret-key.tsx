@@ -6,16 +6,17 @@ import { Copy, Eye, EyeOff, RefreshCw } from "lucide-react";
 import { IWebhook } from "@plane/types";
 // ui
 import { Button, Tooltip, TOAST_TYPE, setToast } from "@plane/ui";
+// constants
+import { WEBHOOK_KEY_REGEN } from "@/constants/event-tracker";
 // helpers
 import { csvDownload } from "@/helpers/download.helper";
 import { copyTextToClipboard } from "@/helpers/string.helper";
 // hooks
-import { useWebhook, useWorkspace } from "@/hooks/store";
+import { useWebhook, useWorkspace, useEventTracker } from "@/hooks/store";
 // types
 import { usePlatformOS } from "@/hooks/use-platform-os";
 // utils
 import { getCurrentHookAsCSV } from "../utils";
-// hooks
 
 type Props = {
   data: Partial<IWebhook>;
@@ -32,6 +33,8 @@ export const WebhookSecretKey: FC<Props> = observer((props) => {
   // store hooks
   const { currentWorkspace } = useWorkspace();
   const { currentWebhook, regenerateSecretKey, webhookSecretKey } = useWebhook();
+  const { captureEvent } = useEventTracker();
+
   const { isMobile } = usePlatformOS();
   const handleCopySecretKey = () => {
     if (!webhookSecretKey) return;
@@ -64,6 +67,9 @@ export const WebhookSecretKey: FC<Props> = observer((props) => {
           type: TOAST_TYPE.SUCCESS,
           title: "Success!",
           message: "New key regenerated successfully.",
+        });
+        captureEvent(WEBHOOK_KEY_REGEN, {
+          webhook_id: data.id,
         });
 
         if (currentWebhook && webhookSecretKey) {

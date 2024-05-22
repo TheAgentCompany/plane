@@ -21,7 +21,9 @@ import {
   CommandPaletteSearchResults,
 } from "@/components/command-palette";
 import { EmptyState } from "@/components/empty-state";
+// constants
 import { EmptyStateType } from "@/constants/empty-state";
+import { E_COMMAND_PALETTE } from "@/constants/event-tracker";
 import { ISSUE_DETAILS } from "@/constants/fetch-keys";
 import { useCommandPalette, useEventTracker, useProject } from "@/hooks/store";
 import useDebounce from "@/hooks/use-debounce";
@@ -33,7 +35,6 @@ import { WorkspaceService } from "@/services/workspace.service";
 // components
 // types
 // fetch-keys
-// constants
 
 const workspaceService = new WorkspaceService();
 const issueService = new IssueService();
@@ -282,7 +283,7 @@ export const CommandModal: React.FC = observer(() => {
                               <Command.Item
                                 onSelect={() => {
                                   closePalette();
-                                  setTrackElement("Command Palette");
+                                  setTrackElement(E_COMMAND_PALETTE);
                                   toggleCreateIssueModal(true);
                                 }}
                                 className="focus:bg-custom-background-80"
@@ -301,7 +302,7 @@ export const CommandModal: React.FC = observer(() => {
                               <Command.Item
                                 onSelect={() => {
                                   closePalette();
-                                  setTrackElement("Command palette");
+                                  setTrackElement(E_COMMAND_PALETTE);
                                   toggleCreateProjectModal(true);
                                 }}
                                 className="focus:outline-none"

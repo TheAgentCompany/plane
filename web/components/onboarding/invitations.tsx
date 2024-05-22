@@ -5,7 +5,7 @@ import { IWorkspaceMemberInvitation } from "@plane/types";
 // ui
 import { Button, Checkbox, Spinner } from "@plane/ui";
 // constants
-import { MEMBER_ACCEPTED } from "@/constants/event-tracker";
+import { E_WORKSPACE_INVITATION, MEMBER_ACCEPTED } from "@/constants/event-tracker";
 import { USER_WORKSPACE_INVITATIONS } from "@/constants/fetch-keys";
 import { ROLE } from "@/constants/workspace";
 // helpers
@@ -56,7 +56,7 @@ export const Invitations: React.FC<Props> = (props) => {
         project_id: undefined,
         accepted_from: "App",
         state: "SUCCESS",
-        element: "Workspace invitations page",
+        element: E_WORKSPACE_INVITATION,
       });
       await fetchWorkspaces();
       await handleNextStep();
@@ -68,7 +68,7 @@ export const Invitations: React.FC<Props> = (props) => {
         project_id: undefined,
         accepted_from: "App",
         state: "FAILED",
-        element: "Workspace invitations page",
+        element: E_WORKSPACE_INVITATION,
       });
       setIsJoiningWorkspaces(false);
     }

@@ -9,6 +9,7 @@ import { ExistingIssuesListModal } from "@/components/core";
 import { EmptyState } from "@/components/empty-state";
 // constants
 import { EmptyStateType } from "@/constants/empty-state";
+import { E_MODULES_ISSUES_EMPTY_STATE } from "@/constants/event-tracker";
 import { EIssuesStoreType } from "@/constants/issue";
 // hooks
 import { useCommandPalette, useEventTracker, useIssues } from "@/hooks/store";
@@ -74,7 +75,7 @@ export const ModuleEmptyState: React.FC<Props> = observer((props) => {
             isEmptyFilters
               ? undefined
               : () => {
-                  setTrackElement("Module issue empty state");
+                  setTrackElement(E_MODULES_ISSUES_EMPTY_STATE);
                   toggleCreateIssueModal(true, EIssuesStoreType.MODULE);
                 }
           }

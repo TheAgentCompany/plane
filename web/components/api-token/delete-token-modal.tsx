@@ -7,8 +7,11 @@ import { IApiToken } from "@plane/types";
 import { TOAST_TYPE, setToast } from "@plane/ui";
 // components
 import { AlertModalCore } from "@/components/core";
-// fetch-keys
+// constants
+import { API_TOKEN_DELETED } from "@/constants/event-tracker";
 import { API_TOKENS_LIST } from "@/constants/fetch-keys";
+// hooks
+import { useEventTracker } from "@/hooks/store";
 // services
 import { APITokenService } from "@/services/api_token.service";
 
@@ -27,6 +30,8 @@ export const DeleteApiTokenModal: FC<Props> = (props) => {
   // router
   const router = useRouter();
   const { workspaceSlug } = router.query;
+  // store hooks
+  const { captureEvent } = useEventTracker();
 
   const handleClose = () => {
     onClose();
@@ -45,6 +50,9 @@ export const DeleteApiTokenModal: FC<Props> = (props) => {
           type: TOAST_TYPE.SUCCESS,
           title: "Success!",
           message: "Token deleted successfully.",
+        });
+        captureEvent(API_TOKEN_DELETED, {
+          token_id: tokenId,
         });
 
         mutate<IApiToken[]>(

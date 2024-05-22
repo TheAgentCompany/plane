@@ -7,6 +7,7 @@ import { BreadcrumbLink } from "@/components/common";
 import { ModuleViewHeader } from "@/components/modules";
 import { ProjectLogo } from "@/components/project";
 // constants
+import { E_MODULES } from "@/constants/event-tracker";
 import { EUserProjectRoles } from "@/constants/project";
 // hooks
 import { useCommandPalette, useEventTracker, useProject, useUser } from "@/hooks/store";
@@ -62,7 +63,7 @@ export const ModulesListHeader: React.FC = observer(() => {
             variant="primary"
             size="sm"
             onClick={() => {
-              setTrackElement("Modules page");
+              setTrackElement(E_MODULES);
               toggleCreateModuleModal(true);
             }}
           >

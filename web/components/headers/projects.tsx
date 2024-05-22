@@ -10,6 +10,7 @@ import { BreadcrumbLink } from "@/components/common";
 import { FiltersDropdown } from "@/components/issues";
 import { ProjectFiltersSelection, ProjectOrderByDropdown } from "@/components/project";
 // constants
+import { E_PROJECTS } from "@/constants/event-tracker";
 import { EUserWorkspaceRoles } from "@/constants/workspace";
 // helpers
 import { cn } from "@/helpers/common.helper";
@@ -169,7 +170,7 @@ export const ProjectsHeader = observer(() => {
           <Button
             size="sm"
             onClick={() => {
-              setTrackElement("Projects page");
+              setTrackElement(E_PROJECTS);
               toggleCreateProjectModal(true);
             }}
             className="items-center gap-1"

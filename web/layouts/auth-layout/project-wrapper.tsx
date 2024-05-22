@@ -21,6 +21,8 @@ import {
 } from "@/hooks/store";
 // images
 import emptyProject from "public/empty-state/project.svg";
+// constants
+import { E_PAGES_EMPTY_STATE } from "@/constants/event-tracker";
 
 interface IProjectAuthWrapper {
   children: ReactNode;
@@ -127,7 +129,7 @@ export const ProjectAuthWrapper: FC<IProjectAuthWrapper> = observer((props) => {
           primaryButton={{
             text: "Create Project",
             onClick: () => {
-              setTrackElement("Projects page empty state");
+              setTrackElement(E_PAGES_EMPTY_STATE);
               toggleCreateProjectModal(true);
             },
           }}

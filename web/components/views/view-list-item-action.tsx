@@ -7,11 +7,12 @@ import { IProjectView } from "@plane/types";
 import { FavoriteStar } from "@/components/core";
 import { DeleteProjectViewModal, CreateUpdateProjectViewModal, ViewQuickActions } from "@/components/views";
 // constants
+import { E_VIEWS, VIEW_FAVORITED, VIEW_UNFAVORITED } from "@/constants/event-tracker";
 import { EUserProjectRoles } from "@/constants/project";
 // helpers
 import { calculateTotalFilters } from "@/helpers/filter.helper";
 // hooks
-import { useMember, useProjectView, useUser } from "@/hooks/store";
+import { useMember, useProjectView, useUser, useEventTracker } from "@/hooks/store";
 import { ButtonAvatars } from "../dropdowns/member/avatar";
 
 type Props = {
@@ -32,6 +33,7 @@ export const ViewListItemAction: FC<Props> = observer((props) => {
     membership: { currentProjectRole },
   } = useUser();
   const { addViewToFavorites, removeViewFromFavorites } = useProjectView();
+  const { captureEvent } = useEventTracker();
   const { getUserDetails } = useMember();
 
   // derived values
@@ -44,12 +46,20 @@ export const ViewListItemAction: FC<Props> = observer((props) => {
     if (!workspaceSlug || !projectId) return;
 
     addViewToFavorites(workspaceSlug.toString(), projectId.toString(), view.id);
+    captureEvent(VIEW_FAVORITED, {
+      view_id: view.id,
+      element: E_VIEWS,
+    });
   };
 
   const handleRemoveFromFavorites = () => {
     if (!workspaceSlug || !projectId) return;
 
     removeViewFromFavorites(workspaceSlug.toString(), projectId.toString(), view.id);
+    captureEvent(VIEW_UNFAVORITED, {
+      view_id: view.id,
+      element: E_VIEWS,
+    });
   };
 
   const createdByDetails = view.created_by ? getUserDetails(view.created_by) : undefined;

@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -94,6 +94,13 @@ const ForgotPasswordPage: NextPageWithLayout = () => {
         });
       });
   };
+
+  if (isRedirecting)
+    return (
+      <div className="grid h-screen place-items-center">
+        <Spinner />
+      </div>
+    );
 
   return (
     <div className="relative w-screen h-screen overflow-hidden">

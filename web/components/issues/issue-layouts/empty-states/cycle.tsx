@@ -10,6 +10,7 @@ import { ExistingIssuesListModal } from "@/components/core";
 import { EmptyState } from "@/components/empty-state";
 // constants
 import { EmptyStateType } from "@/constants/empty-state";
+import { E_CYCLE_ISSUES_EMPTY_STATE } from "@/constants/event-tracker";
 import { EIssuesStoreType } from "@/constants/issue";
 // hooks
 import { useCommandPalette, useCycle, useEventTracker, useIssues } from "@/hooks/store";
@@ -88,7 +89,7 @@ export const CycleEmptyState: React.FC<Props> = observer((props) => {
           primaryButtonOnClick={
             !isCompletedAndEmpty && !isEmptyFilters
               ? () => {
-                  setTrackElement("Cycle issue empty state");
+                  setTrackElement(E_CYCLE_ISSUES_EMPTY_STATE);
                   toggleCreateIssueModal(true, EIssuesStoreType.CYCLE);
                 }
               : undefined

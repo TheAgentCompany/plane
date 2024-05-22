@@ -11,7 +11,7 @@ import { TOAST_TYPE, setPromiseToast, setToast, CustomMenu } from "@plane/ui";
 // components
 import { ExistingIssuesListModal } from "@/components/core";
 // constants
-import { ISSUE_CREATED } from "@/constants/event-tracker";
+import { E_CALENDAR_QUICK_ADD, ISSUE_CREATED } from "@/constants/event-tracker";
 // helpers
 import { cn } from "@/helpers/common.helper";
 import { createIssuePayload } from "@/helpers/issue.helper";
@@ -155,15 +155,15 @@ export const CalendarQuickAddIssueForm: React.FC<Props> = observer((props) => {
         .then((res) => {
           captureIssueEvent({
             eventName: ISSUE_CREATED,
-            payload: { ...res, state: "SUCCESS", element: "Calendar quick add" },
-            path: router.asPath,
+            payload: { ...res, state: "SUCCESS", element: E_CALENDAR_QUICK_ADD },
+            routePath: router.asPath,
           });
         })
         .catch(() => {
           captureIssueEvent({
             eventName: ISSUE_CREATED,
-            payload: { ...payload, state: "FAILED", element: "Calendar quick add" },
-            path: router.asPath,
+            payload: { ...payload, state: "FAILED", element: E_CALENDAR_QUICK_ADD },
+            routePath: router.asPath,
           });
         });
     }

@@ -12,6 +12,7 @@ import { CyclesHeader } from "@/components/headers";
 import { CycleModuleListLayout } from "@/components/ui";
 // constants
 import { EmptyStateType } from "@/constants/empty-state";
+import { CYCLES_FILTER_REMOVED, E_CYCLES_EMPTY_STATE } from "@/constants/event-tracker";
 // helpers
 import { calculateTotalFilters } from "@/helpers/filter.helper";
 // hooks
@@ -28,6 +29,7 @@ const ProjectCyclesPage: NextPageWithLayout = observer(() => {
   const { setTrackElement } = useEventTracker();
   const { currentProjectCycleIds, loader } = useCycle();
   const { getProjectById, currentProjectDetails } = useProject();
+  const { captureEvent } = useEventTracker();
   // router
   const router = useRouter();
   const { workspaceSlug, projectId } = router.query;
@@ -45,6 +47,11 @@ const ProjectCyclesPage: NextPageWithLayout = observer(() => {
     if (!value) newValues = [];
     else newValues = newValues.filter((val) => val !== value);
 
+    captureEvent(CYCLES_FILTER_REMOVED, {
+      filter_type: key,
+      filter_property: value,
+      current_filters: currentProjectFilters,
+    });
     updateFilters(projectId.toString(), { [key]: newValues });
   };
 
@@ -78,7 +85,7 @@ const ProjectCyclesPage: NextPageWithLayout = observer(() => {
             <EmptyState
               type={EmptyStateType.PROJECT_CYCLES}
               primaryButtonOnClick={() => {
-                setTrackElement("Cycle empty state");
+                setTrackElement(E_CYCLES_EMPTY_STATE);
                 setCreateModal(true);
               }}
             />

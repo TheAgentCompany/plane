@@ -6,6 +6,8 @@ import useSWR from "swr";
 import { Plus } from "lucide-react";
 import { Loader } from "@plane/ui";
 import { CreateUpdateStateInline, DeleteStateModal, StateGroup, StatesListItem } from "@/components/states";
+// constants
+import { E_STATES } from "@/constants/event-tracker";
 import { STATES_LIST } from "@/constants/fetch-keys";
 import { sortByField } from "@/helpers/array.helper";
 import { orderStateGroups } from "@/helpers/state.helper";
@@ -55,7 +57,7 @@ export const ProjectSettingStateList: React.FC = observer(() => {
                     type="button"
                     className="flex items-center gap-2 px-2 text-custom-primary-100 outline-none hover:text-custom-primary-200"
                     onClick={() => {
-                      setTrackElement("PROJECT_SETTINGS_STATES_PAGE");
+                      setTrackElement(E_STATES);
                       setActiveGroup(group as keyof StateGroup);
                     }}
                   >

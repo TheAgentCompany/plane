@@ -8,6 +8,8 @@ import { Pencil, Trash2 } from "lucide-react";
 import { CustomMenu } from "@plane/ui";
 // components
 import { CreateUpdateWorkspaceViewModal, DeleteGlobalViewModal } from "@/components/workspace";
+// constants
+import { E_LIST_LAYOUT } from "@/constants/event-tracker";
 // helpers
 import { calculateTotalFilters } from "@/helpers/filter.helper";
 import { truncateText } from "@/helpers/string.helper";
@@ -58,7 +60,7 @@ export const GlobalViewListItem: React.FC<Props> = observer((props) => {
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        setTrackElement("List view");
+                        setTrackElement(E_LIST_LAYOUT);
                         setUpdateViewModal(true);
                       }}
                     >

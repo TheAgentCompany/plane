@@ -18,6 +18,11 @@ on:
         description: "Build Admin"
         type: boolean
         default: false
+      admin-build:
+        required: false
+        description: 'Build Admin'
+        type: boolean
+        default: false
 
 env:
   BUILD_WEB: ${{ github.event.inputs.web-build }}

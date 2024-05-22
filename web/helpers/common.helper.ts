@@ -33,3 +33,5 @@ export const debounce = (func: any, wait: number, immediate: boolean = false) =>
 };
 
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
+
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ? process.env.NEXT_PUBLIC_API_BASE_URL : "";

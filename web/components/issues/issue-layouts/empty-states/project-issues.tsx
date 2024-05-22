@@ -7,6 +7,7 @@ import { IIssueFilterOptions } from "@plane/types";
 import { EmptyState } from "@/components/empty-state";
 // constants
 import { EmptyStateType } from "@/constants/empty-state";
+import { E_PROJECT_ISSUES_EMPTY_STATE } from "@/constants/event-tracker";
 import { EIssueFilterType, EIssuesStoreType } from "@/constants/issue";
 // hooks
 import { useCommandPalette, useEventTracker, useIssues } from "@/hooks/store";
@@ -55,7 +56,7 @@ export const ProjectEmptyState: React.FC = observer(() => {
           issueFilterCount > 0
             ? undefined
             : () => {
-                setTrackElement("Project issue empty state");
+                setTrackElement(E_PROJECT_ISSUES_EMPTY_STATE);
                 toggleCreateIssueModal(true, EIssuesStoreType.PROJECT);
               }
         }

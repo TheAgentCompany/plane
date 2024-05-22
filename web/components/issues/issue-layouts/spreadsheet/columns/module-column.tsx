@@ -5,11 +5,12 @@ import { useRouter } from "next/router";
 import { TIssue } from "@plane/types";
 // hooks
 import { ModuleDropdown } from "@/components/dropdowns";
+// constants
+import { E_SPREADSHEET_LAYOUT } from "@/constants/event-tracker";
 import { EIssuesStoreType } from "@/constants/issue";
 import { useEventTracker, useIssues } from "@/hooks/store";
 // components
 // types
-// constants
 
 type Props = {
   issue: TIssue;
@@ -47,10 +48,10 @@ export const SpreadsheetModuleColumn: React.FC<Props> = observer((props) => {
         payload: {
           ...issue,
           module_ids: moduleIds,
-          element: "Spreadsheet layout",
+          element: E_SPREADSHEET_LAYOUT,
         },
         updates: { changed_property: "module_ids", change_details: { module_ids: moduleIds } },
-        path: router.asPath,
+        routePath: router.asPath,
       });
     },
     [workspaceSlug, issue, changeModulesInIssue, captureIssueEvent, router.asPath]

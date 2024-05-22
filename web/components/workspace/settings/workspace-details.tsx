@@ -11,7 +11,7 @@ import { LogoSpinner } from "@/components/common";
 import { WorkspaceImageUploadModal } from "@/components/core";
 import { DeleteWorkspaceModal } from "@/components/workspace";
 // constants
-import { WORKSPACE_UPDATED } from "@/constants/event-tracker";
+import { E_WORKSPACE_GENERAL, WORKSPACE_UPDATED } from "@/constants/event-tracker";
 import { EUserWorkspaceRoles, ORGANIZATION_SIZE } from "@/constants/workspace";
 // helpers
 import { copyUrlToClipboard } from "@/helpers/string.helper";
@@ -49,7 +49,7 @@ export const WorkspaceDetails: FC = observer(() => {
     control,
     reset,
     watch,
-    formState: { errors },
+    formState: { errors, dirtyFields },
   } = useForm<IWorkspace>({
     defaultValues: { ...defaultValues, ...currentWorkspace },
   });
@@ -71,8 +71,9 @@ export const WorkspaceDetails: FC = observer(() => {
           eventName: WORKSPACE_UPDATED,
           payload: {
             ...res,
+            change_details: Object.keys(dirtyFields),
             state: "SUCCESS",
-            element: "Workspace general settings page",
+            element: E_WORKSPACE_GENERAL,
           },
         });
         setToast({
@@ -86,7 +87,7 @@ export const WorkspaceDetails: FC = observer(() => {
           eventName: WORKSPACE_UPDATED,
           payload: {
             state: "FAILED",
-            element: "Workspace general settings page",
+            element: E_WORKSPACE_GENERAL,
           },
         });
         console.error(err);

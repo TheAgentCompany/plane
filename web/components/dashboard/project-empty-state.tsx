@@ -3,6 +3,7 @@ import Image from "next/image";
 // ui
 import { Button } from "@plane/ui";
 // constants
+import { E_PROJECT_EMPTY_STATE } from "@/constants/event-tracker";
 import { EUserWorkspaceRoles } from "@/constants/workspace";
 // hooks
 import { useCommandPalette, useEventTracker, useUser } from "@/hooks/store";
@@ -33,7 +34,7 @@ export const DashboardProjectEmptyState = observer(() => {
           <Button
             variant="primary"
             onClick={() => {
-              setTrackElement("Project empty state");
+              setTrackElement(E_PROJECT_EMPTY_STATE);
               toggleCreateProjectModal(true);
             }}
           >

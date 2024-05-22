@@ -18,7 +18,7 @@ import { ActiveLoader } from "@/components/ui";
 // constants
 import { EIssuesStoreType } from "@/constants/issue";
 // hooks
-import { useIssues } from "@/hooks/store";
+import { useIssues, useEventTracker } from "@/hooks/store";
 
 export const ProjectLayoutRoot: FC = observer(() => {
   // router
@@ -26,12 +26,17 @@ export const ProjectLayoutRoot: FC = observer(() => {
   const { workspaceSlug, projectId } = router.query;
   // hooks
   const { issues, issuesFilter } = useIssues(EIssuesStoreType.PROJECT);
+  const { captureIssuesListOpenedEvent } = useEventTracker();
 
   useSWR(
     workspaceSlug && projectId ? `PROJECT_ISSUES_${workspaceSlug}_${projectId}` : null,
     async () => {
       if (workspaceSlug && projectId) {
         await issuesFilter?.fetchFilters(workspaceSlug.toString(), projectId.toString());
+        captureIssuesListOpenedEvent({
+          routePath: router.asPath,
+          filters: issuesFilter?.issueFilters?.filters,
+        });
         await issues?.fetchIssues(
           workspaceSlug.toString(),
           projectId.toString(),
@@ -79,7 +84,7 @@ export const ProjectLayoutRoot: FC = observer(() => {
           </div>
 
           {/* peek overview */}
-          <IssuePeekOverview />
+          <IssuePeekOverview issuesFilter={issuesFilter.issueFilters} />
         </Fragment>
       )}
     </div>

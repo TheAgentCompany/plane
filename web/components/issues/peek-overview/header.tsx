@@ -15,12 +15,13 @@ import {
 } from "@plane/ui";
 // components
 import { IssueSubscription, IssueUpdateStatus } from "@/components/issues";
+import { ISSUE_OPENED } from "@/constants/event-tracker";
 import { STATE_GROUPS } from "@/constants/state";
 // helpers
 import { cn } from "@/helpers/common.helper";
 import { copyUrlToClipboard } from "@/helpers/string.helper";
 // store hooks
-import { useIssueDetail, useProjectState, useUser } from "@/hooks/store";
+import { useIssueDetail, useProjectState, useUser, useEventTracker } from "@/hooks/store";
 // hooks
 import { usePlatformOS } from "@/hooks/use-platform-os";
 export type TPeekModes = "side-peek" | "modal" | "full-screen";
@@ -79,6 +80,7 @@ export const IssuePeekOverviewHeader: FC<PeekOverviewHeaderProps> = observer((pr
     issue: { getIssueById },
   } = useIssueDetail();
   const { getStateById } = useProjectState();
+  const { captureEvent } = useEventTracker();
   const { isMobile } = usePlatformOS();
   // derived values
   const issueDetails = getIssueById(issueId);
@@ -118,7 +120,17 @@ export const IssuePeekOverviewHeader: FC<PeekOverviewHeaderProps> = observer((pr
         </Tooltip>
 
         <Tooltip tooltipContent="Open issue in full screen" isMobile={isMobile}>
-          <Link href={`/${issueLink}`} onClick={() => removeRoutePeekId()}>
+          <Link
+            onClick={() => {
+              removeRoutePeekId();
+              captureEvent(ISSUE_OPENED, {
+                issue_id: issueId,
+                element: "peek",
+                mode: "detail",
+              });
+            }}
+            href={`/${issueLink}`}
+          >
             <MoveDiagonal className="h-4 w-4 text-custom-text-300 hover:text-custom-text-200" />
           </Link>
         </Tooltip>

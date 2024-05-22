@@ -5,9 +5,6 @@ from plane.app.serializers import UserAdminLiteSerializer
 
 
 class InstanceSerializer(BaseSerializer):
-    primary_owner_details = UserAdminLiteSerializer(
-        source="primary_owner", read_only=True
-    )
 
     class Meta:
         model = Instance

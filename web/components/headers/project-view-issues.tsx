@@ -10,7 +10,17 @@ import { Breadcrumbs, Button, CustomMenu, PhotoFilterIcon } from "@plane/ui";
 import { BreadcrumbLink } from "@/components/common";
 import { DisplayFiltersSelection, FiltersDropdown, FilterSelection, LayoutSelection } from "@/components/issues";
 import { ProjectLogo } from "@/components/project";
-// constants
+import {
+  DP_APPLIED,
+  DP_REMOVED,
+  E_VIEWS,
+  elementFromPath,
+  FILTER_APPLIED,
+  FILTER_REMOVED,
+  FILTER_SEARCHED,
+  LAYOUT_CHANGED,
+  LP_UPDATED,
+} from "@/constants/event-tracker";
 import { EIssuesStoreType, EIssueFilterType, ISSUE_DISPLAY_FILTERS_BY_LAYOUT } from "@/constants/issue";
 import { EUserProjectRoles } from "@/constants/project";
 // helpers
@@ -37,7 +47,8 @@ export const ProjectViewIssuesHeader: React.FC = observer(() => {
   const {
     issuesFilter: { issueFilters, updateFilters },
   } = useIssues(EIssuesStoreType.PROJECT_VIEW);
-  const { setTrackElement } = useEventTracker();
+  const { setTrackElement, captureEvent, captureIssuesFilterEvent, captureIssuesDisplayFilterEvent } =
+    useEventTracker();
   const { toggleCreateIssueModal } = useCommandPalette();
   const {
     membership: { currentProjectRole },
@@ -61,15 +72,20 @@ export const ProjectViewIssuesHeader: React.FC = observer(() => {
         EIssueFilterType.DISPLAY_FILTERS,
         { layout: layout },
         viewId.toString()
+      ).then(() =>
+        captureEvent(LAYOUT_CHANGED, {
+          layout: layout,
+          ...elementFromPath(router.asPath),
+        })
       );
     },
-    [workspaceSlug, projectId, viewId, updateFilters]
+    [workspaceSlug, projectId, viewId, updateFilters, captureEvent, router.asPath]
   );
 
   const handleFiltersUpdate = useCallback(
     (key: keyof IIssueFilterOptions, value: string | string[]) => {
       if (!workspaceSlug || !projectId || !viewId) return;
-      const newValues = issueFilters?.filters?.[key] ?? [];
+      const newValues = Array.from(issueFilters?.filters?.[key] ?? []);
 
       if (Array.isArray(value)) {
         // this validation is majorly for the filter start_date, target_date custom
@@ -81,16 +97,26 @@ export const ProjectViewIssuesHeader: React.FC = observer(() => {
         if (issueFilters?.filters?.[key]?.includes(value)) newValues.splice(newValues.indexOf(value), 1);
         else newValues.push(value);
       }
-
+      const event = (issueFilters?.filters?.[key] ?? []).length > newValues.length ? FILTER_REMOVED : FILTER_APPLIED;
       updateFilters(
         workspaceSlug.toString(),
         projectId.toString(),
         EIssueFilterType.FILTERS,
         { [key]: newValues },
         viewId.toString()
+      ).then(() =>
+        captureIssuesFilterEvent({
+          eventName: event,
+          payload: {
+            routePath: router.asPath,
+            filters: issueFilters,
+            filter_property: value,
+            filter_type: key,
+          },
+        })
       );
     },
-    [workspaceSlug, projectId, viewId, issueFilters, updateFilters]
+    [workspaceSlug, projectId, viewId, issueFilters, updateFilters, captureIssuesFilterEvent, router.asPath]
   );
 
   const handleDisplayFilters = useCallback(
@@ -102,9 +128,19 @@ export const ProjectViewIssuesHeader: React.FC = observer(() => {
         EIssueFilterType.DISPLAY_FILTERS,
         updatedDisplayFilter,
         viewId.toString()
+      ).then(() =>
+        captureIssuesDisplayFilterEvent({
+          eventName: LP_UPDATED,
+          payload: {
+            property_type: Object.keys(updatedDisplayFilter).join(","),
+            property: Object.values(updatedDisplayFilter)?.[0],
+            routePath: router.asPath,
+            filters: issueFilters,
+          },
+        })
       );
     },
-    [workspaceSlug, projectId, viewId, updateFilters]
+    [workspaceSlug, projectId, viewId, updateFilters, issueFilters, captureIssuesDisplayFilterEvent, router.asPath]
   );
 
   const handleDisplayProperties = useCallback(
@@ -116,9 +152,18 @@ export const ProjectViewIssuesHeader: React.FC = observer(() => {
         EIssueFilterType.DISPLAY_PROPERTIES,
         property,
         viewId.toString()
+      ).then(() =>
+        captureIssuesDisplayFilterEvent({
+          eventName: Object.values(property)?.[0] === true ? DP_APPLIED : DP_REMOVED,
+          payload: {
+            display_property: Object.keys(property).join(","),
+            routePath: router.asPath,
+            filters: issueFilters,
+          },
+        })
       );
     },
-    [workspaceSlug, projectId, viewId, updateFilters]
+    [workspaceSlug, projectId, viewId, updateFilters, issueFilters, captureIssuesDisplayFilterEvent, router.asPath]
   );
 
   const viewDetails = viewId ? getViewById(viewId.toString()) : null;
@@ -215,6 +260,16 @@ export const ProjectViewIssuesHeader: React.FC = observer(() => {
             labels={projectLabels}
             memberIds={projectMemberIds ?? undefined}
             states={projectStates}
+            onSearchCapture={() =>
+              captureIssuesFilterEvent({
+                eventName: FILTER_SEARCHED,
+                payload: {
+                  routePath: router.asPath,
+                  current_filters: issueFilters?.filters,
+                  layout: issueFilters?.displayFilters?.layout,
+                },
+              })
+            }
             cycleViewDisabled={!currentProjectDetails?.cycle_view}
             moduleViewDisabled={!currentProjectDetails?.module_view}
           />
@@ -235,7 +290,7 @@ export const ProjectViewIssuesHeader: React.FC = observer(() => {
         {canUserCreateIssue && (
           <Button
             onClick={() => {
-              setTrackElement("PROJECT_VIEW_PAGE_HEADER");
+              setTrackElement(E_VIEWS);
               toggleCreateIssueModal(true, EIssuesStoreType.PROJECT_VIEW);
             }}
             size="sm"

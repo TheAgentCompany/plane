@@ -11,6 +11,7 @@ import { WidgetLoader, WidgetProps } from "@/components/dashboard/widgets";
 import { ProjectLogo } from "@/components/project";
 // constants
 import { PROJECT_BACKGROUND_COLORS } from "@/constants/dashboard";
+import { E_SIDEBAR } from "@/constants/event-tracker";
 import { EUserWorkspaceRoles } from "@/constants/workspace";
 // hooks
 import { useEventTracker, useDashboard, useProject, useUser, useCommandPalette } from "@/hooks/store";
@@ -95,7 +96,7 @@ export const RecentProjectsWidget: React.FC<WidgetProps> = observer((props) => {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              setTrackElement("Sidebar");
+              setTrackElement(E_SIDEBAR);
               toggleCreateProjectModal(true);
             }}
           >

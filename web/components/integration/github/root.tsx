@@ -22,10 +22,12 @@ import {
 } from "@/components/integration";
 // icons
 // images
+import { GITHUB_ISSUES_IMPORTED } from "@/constants/event-tracker";
 import { APP_INTEGRATIONS, IMPORTER_SERVICES_LIST, WORKSPACE_INTEGRATIONS } from "@/constants/fetch-keys";
+// hooks
+import { useEventTracker } from "@/hooks/store";
 import { IntegrationService, GithubIntegrationService } from "@/services/integrations";
 import GithubLogo from "public/services/github.png";
-// hooks
 // components
 // icons
 // images
@@ -90,9 +92,11 @@ export const GithubImporterRoot: React.FC = () => {
     state: "import-configure",
   });
   const [users, setUsers] = useState<IUserDetails[]>([]);
-
+  // router
   const router = useRouter();
   const { workspaceSlug, provider } = router.query;
+  // store hooks
+  const { captureEvent } = useEventTracker();
 
   const { handleSubmit, control, setValue, watch } = useForm<TFormValues>({
     defaultValues: defaultFormValues,
@@ -147,6 +151,7 @@ export const GithubImporterRoot: React.FC = () => {
       .then(() => {
         router.push(`/${workspaceSlug}/settings/imports`);
         mutate(IMPORTER_SERVICES_LIST(workspaceSlug as string));
+        captureEvent(GITHUB_ISSUES_IMPORTED);
       })
       .catch(() =>
         setToast({

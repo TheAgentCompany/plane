@@ -1,5 +1,6 @@
 import { FC, useMemo, useState } from "react";
 import { observer } from "mobx-react-lite";
+import { useRouter } from "next/router";
 import { History, LucideIcon, MessageCircle } from "lucide-react";
 // types
 import { TIssueComment } from "@plane/types";
@@ -7,8 +8,10 @@ import { TIssueComment } from "@plane/types";
 import { TOAST_TYPE, setToast } from "@plane/ui";
 // components
 import { IssueActivityCommentRoot, IssueCommentRoot, IssueCommentCreate } from "@/components/issues";
+// constants
+import { COMMENT_CREATED, COMMENT_DELETED, COMMENT_UPDATED, E_INBOX, E_ISSUE_DETAILS } from "@/constants/event-tracker";
 // hooks
-import { useIssueDetail, useProject } from "@/hooks/store";
+import { useIssueDetail, useProject, useEventTracker } from "@/hooks/store";
 
 type TIssueActivity = {
   workspaceSlug: string;
@@ -40,8 +43,13 @@ export type TActivityOperations = {
 
 export const IssueActivity: FC<TIssueActivity> = observer((props) => {
   const { workspaceSlug, projectId, issueId, disabled = false } = props;
+  // router
+  const router = useRouter();
+  const { inboxIssueId } = router.query;
   // hooks
   const { createComment, updateComment, removeComment } = useIssueDetail();
+  const { captureEvent } = useEventTracker();
+  const { peekIssue } = useIssueDetail();
   const { getProjectById } = useProject();
   // state
   const [activityTab, setActivityTab] = useState<TActivityTabs>("comments");
@@ -51,7 +59,13 @@ export const IssueActivity: FC<TIssueActivity> = observer((props) => {
       createComment: async (data: Partial<TIssueComment>) => {
         try {
           if (!workspaceSlug || !projectId || !issueId) throw new Error("Missing fields");
-          await createComment(workspaceSlug, projectId, issueId, data);
+          const res = await createComment(workspaceSlug, projectId, issueId, data);
+          captureEvent(COMMENT_CREATED, {
+            issue_id: issueId,
+            comment_id: res?.id,
+            is_public: data.access === "EXTERNAL",
+            element: peekIssue ? "Peek issue" : inboxIssueId ? E_INBOX : E_ISSUE_DETAILS,
+          });
           setToast({
             title: "Success!",
             type: TOAST_TYPE.SUCCESS,
@@ -69,6 +83,12 @@ export const IssueActivity: FC<TIssueActivity> = observer((props) => {
         try {
           if (!workspaceSlug || !projectId || !issueId) throw new Error("Missing fields");
           await updateComment(workspaceSlug, projectId, issueId, commentId, data);
+          captureEvent(COMMENT_UPDATED, {
+            issue_id: issueId,
+            comment_id: commentId,
+            is_public: data.access === "EXTERNAL",
+            element: peekIssue ? "Peek issue" : inboxIssueId ? E_INBOX : E_ISSUE_DETAILS,
+          });
           setToast({
             title: "Success!",
             type: TOAST_TYPE.SUCCESS,
@@ -86,6 +106,11 @@ export const IssueActivity: FC<TIssueActivity> = observer((props) => {
         try {
           if (!workspaceSlug || !projectId || !issueId) throw new Error("Missing fields");
           await removeComment(workspaceSlug, projectId, issueId, commentId);
+          captureEvent(COMMENT_DELETED, {
+            issue_id: issueId,
+            comment_id: commentId,
+            element: peekIssue ? "Peek issue" : inboxIssueId ? E_INBOX : E_ISSUE_DETAILS,
+          });
           setToast({
             title: "Success!",
             type: TOAST_TYPE.SUCCESS,

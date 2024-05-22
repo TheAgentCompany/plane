@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { observer } from "mobx-react";
-import { useRouter } from "next/router";
 import { TIssue } from "@plane/types";
 import { Loader, TOAST_TYPE, setToast } from "@plane/ui";
 // components
@@ -13,6 +12,8 @@ import {
   TIssueOperations,
   IssueAttachmentRoot,
 } from "@/components/issues";
+// constants
+import { E_INBOX, INBOX_ISSUE_UPDATED } from "@/constants/event-tracker";
 // hooks
 import { useEventTracker, useProjectInbox, useUser } from "@/hooks/store";
 import useReloadConfirmations from "@/hooks/use-reload-confirmation";
@@ -29,12 +30,11 @@ type Props = {
 };
 
 export const InboxIssueMainContent: React.FC<Props> = observer((props) => {
-  const router = useRouter();
   const { workspaceSlug, projectId, inboxIssue, isEditable, isSubmitting, setIsSubmitting } = props;
   // hooks
   const { data: currentUser } = useUser();
   const { setShowAlert } = useReloadConfirmations(isSubmitting === "submitting");
-  const { captureIssueEvent } = useEventTracker();
+  const { captureEvent } = useEventTracker();
   const { loader } = useProjectInbox();
 
   useEffect(() => {
@@ -80,14 +80,12 @@ export const InboxIssueMainContent: React.FC<Props> = observer((props) => {
       update: async (workspaceSlug: string, projectId: string, issueId: string, data: Partial<TIssue>) => {
         try {
           await inboxIssue.updateIssue(data);
-          captureIssueEvent({
-            eventName: "Inbox issue updated",
-            payload: { ...data, state: "SUCCESS", element: "Inbox" },
-            updates: {
-              changed_property: Object.keys(data).join(","),
-              change_details: Object.values(data).join(","),
-            },
-            path: router.asPath,
+          captureEvent(INBOX_ISSUE_UPDATED, {
+            ...data,
+            changed_property: Object.keys(data).join(","),
+            change_details: Object.values(data).join(","),
+            element: E_INBOX,
+            state: "SUCCESS",
           });
         } catch (error) {
           setToast({
@@ -95,14 +93,12 @@ export const InboxIssueMainContent: React.FC<Props> = observer((props) => {
             type: TOAST_TYPE.ERROR,
             message: "Issue update failed",
           });
-          captureIssueEvent({
-            eventName: "Inbox issue updated",
-            payload: { state: "SUCCESS", element: "Inbox" },
-            updates: {
-              changed_property: Object.keys(data).join(","),
-              change_details: Object.values(data).join(","),
-            },
-            path: router.asPath,
+          captureEvent(INBOX_ISSUE_UPDATED, {
+            ...data,
+            changed_property: Object.keys(data).join(","),
+            change_details: Object.values(data).join(","),
+            element: E_INBOX,
+            state: "FAILED",
           });
         }
       },

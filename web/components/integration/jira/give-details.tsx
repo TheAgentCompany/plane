@@ -7,6 +7,8 @@ import { IJiraImporterForm } from "@plane/types";
 // hooks
 // components
 import { CustomSelect, Input } from "@plane/ui";
+// constants
+import { E_JIRA_IMPORT } from "@/constants/event-tracker";
 // helpers
 import { checkEmailValidity } from "@/helpers/string.helper";
 import { useCommandPalette, useEventTracker, useProject } from "@/hooks/store";
@@ -200,7 +202,7 @@ export const JiraGetImportDetail: React.FC = observer(() => {
                   <button
                     type="button"
                     onClick={() => {
-                      setTrackElement("Jira import detail page");
+                      setTrackElement(E_JIRA_IMPORT);
                       toggleCreateProjectModal(true);
                     }}
                     className="flex cursor-pointer select-none items-center space-x-2 truncate rounded px-1 py-1.5 text-custom-text-200"

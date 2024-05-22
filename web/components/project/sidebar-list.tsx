@@ -8,6 +8,8 @@ import { IProject } from "@plane/types";
 // hooks
 import { TOAST_TYPE, setToast } from "@plane/ui";
 import { CreateProjectModal, ProjectSidebarListItem } from "@/components/project";
+// constants
+import { E_SIDEBAR } from "@/constants/event-tracker";
 import { EUserWorkspaceRoles } from "@/constants/workspace";
 import { cn } from "@/helpers/common.helper";
 import { orderJoinedProjects } from "@/helpers/project.helper";
@@ -149,7 +151,7 @@ export const ProjectSidebarList: FC = observer(() => {
                               <button
                                 className="opacity-0 group-hover:opacity-100"
                                 onClick={() => {
-                                  setTrackElement("APP_SIDEBAR_FAVORITES_BLOCK");
+                                  setTrackElement(E_SIDEBAR);
                                   setIsFavoriteProjectCreate(true);
                                   setIsProjectModalOpen(true);
                                 }}
@@ -228,7 +230,7 @@ export const ProjectSidebarList: FC = observer(() => {
                               <button
                                 className="opacity-0 group-hover:opacity-100"
                                 onClick={() => {
-                                  setTrackElement("Sidebar");
+                                  setTrackElement(E_SIDEBAR);
                                   setIsFavoriteProjectCreate(false);
                                   setIsProjectModalOpen(true);
                                 }}
@@ -279,7 +281,7 @@ export const ProjectSidebarList: FC = observer(() => {
             type="button"
             className="flex w-full items-center gap-2 px-3 text-sm text-custom-sidebar-text-200"
             onClick={() => {
-              setTrackElement("Sidebar");
+              setTrackElement(E_SIDEBAR);
               toggleCreateProjectModal(true);
             }}
           >

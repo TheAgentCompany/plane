@@ -8,6 +8,7 @@ import { BreadcrumbLink } from "@/components/common";
 import { CyclesViewHeader } from "@/components/cycles";
 import { ProjectLogo } from "@/components/project";
 // constants
+import { E_CYCLES } from "@/constants/event-tracker";
 import { EUserProjectRoles } from "@/constants/project";
 // hooks
 import { useCommandPalette, useEventTracker, useProject, useUser } from "@/hooks/store";
@@ -62,7 +63,7 @@ export const CyclesHeader: FC = observer(() => {
             variant="primary"
             size="sm"
             onClick={() => {
-              setTrackElement("Cycles page");
+              setTrackElement(E_CYCLES);
               toggleCreateCycleModal(true);
             }}
           >

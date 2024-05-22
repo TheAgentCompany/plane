@@ -7,7 +7,7 @@ import { Button } from "@plane/ui";
 // components
 import { TourSidebar } from "@/components/onboarding";
 // constants
-import { PRODUCT_TOUR_SKIPPED, PRODUCT_TOUR_STARTED } from "@/constants/event-tracker";
+import { E_PRODUCT_TOUR, PRODUCT_TOUR_SKIPPED, PRODUCT_TOUR_STARTED } from "@/constants/event-tracker";
 // hooks
 import { useCommandPalette, useEventTracker, useUser } from "@/hooks/store";
 // assets
@@ -169,7 +169,7 @@ export const TourRoot: React.FC<Props> = observer((props) => {
                   <Button
                     variant="primary"
                     onClick={() => {
-                      setTrackElement("Product tour");
+                      setTrackElement(E_PRODUCT_TOUR);
                       onComplete();
                       toggleCreateProjectModal(true);
                     }}

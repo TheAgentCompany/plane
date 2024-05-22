@@ -4,7 +4,9 @@ import { useRouter } from "next/router";
 import { IWebhook } from "@plane/types";
 // hooks
 import { ToggleSwitch } from "@plane/ui";
-import { useWebhook } from "@/hooks/store";
+// constants
+import { WEBHOOK_DISABLED, WEBHOOK_ENABLED } from "@/constants/event-tracker";
+import { useWebhook, useEventTracker } from "@/hooks/store";
 // ui
 // types
 
@@ -19,11 +21,16 @@ export const WebhooksListItem: FC<IWebhookListItem> = (props) => {
   const { workspaceSlug } = router.query;
   // store hooks
   const { updateWebhook } = useWebhook();
+  const { captureEvent } = useEventTracker();
 
   const handleToggle = () => {
     if (!workspaceSlug || !webhook.id) return;
 
-    updateWebhook(workspaceSlug.toString(), webhook.id, { is_active: !webhook.is_active });
+    updateWebhook(workspaceSlug.toString(), webhook.id, { is_active: !webhook.is_active }).then(() =>
+      captureEvent(!webhook.is_active ? WEBHOOK_ENABLED : WEBHOOK_DISABLED, {
+        webhook_id: webhook.id,
+      })
+    );
   };
 
   return (

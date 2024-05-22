@@ -6,6 +6,7 @@ import { TIssue } from "@plane/types";
 // components
 import { CreateUpdateIssueModal } from "@/components/issues";
 // constants
+import { E_SIDEBAR } from "@/constants/event-tracker";
 import { EIssuesStoreType } from "@/constants/issue";
 import { EUserWorkspaceRoles } from "@/constants/workspace";
 // hooks
@@ -89,7 +90,7 @@ export const WorkspaceSidebarQuickAction = observer(() => {
                 isSidebarCollapsed ? "justify-center" : ""
               } ${disabled ? "cursor-not-allowed opacity-50" : ""}`}
               onClick={() => {
-                setTrackElement("APP_SIDEBAR_QUICK_ACTIONS");
+                setTrackElement(E_SIDEBAR);
                 toggleCreateIssueModal(true, EIssuesStoreType.PROJECT);
               }}
               disabled={disabled}

@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import { Pencil, X, ArrowDown, ArrowUp } from "lucide-react";
 import { IState } from "@plane/types";
 import { Tooltip, StateGroupIcon } from "@plane/ui";
+// constants
+import { E_STATES } from "@/constants/event-tracker";
 // icons
 // helpers
 import { addSpaceIfCamelCase } from "@/helpers/string.helper";
@@ -105,7 +107,7 @@ export const StatesListItem: React.FC<Props> = observer((props) => {
               state.default || groupLength === 1 ? "cursor-not-allowed" : ""
             } grid place-items-center`}
             onClick={() => {
-              setTrackElement("PROJECT_SETTINGS_STATE_PAGE");
+              setTrackElement(E_STATES);
               handleDeleteState();
             }}
             disabled={state.default || groupLength === 1}

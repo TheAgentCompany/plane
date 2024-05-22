@@ -7,13 +7,14 @@ import { Button, Loader, TOAST_TYPE, setToast } from "@plane/ui";
 import { EmptyState } from "@/components/empty-state";
 import { CreateUpdateEstimateModal, DeleteEstimateModal, EstimateListItem } from "@/components/estimates";
 import { EmptyStateType } from "@/constants/empty-state";
+// constants
+import { ESTIMATE_DISABLED } from "@/constants/event-tracker";
 import { orderArrayBy } from "@/helpers/array.helper";
-import { useEstimate, useProject } from "@/hooks/store";
+import { useEstimate, useProject, useEventTracker } from "@/hooks/store";
 // components
 // ui
 // types
 // helpers
-// constants
 
 export const EstimatesList: React.FC = observer(() => {
   // states
@@ -26,6 +27,7 @@ export const EstimatesList: React.FC = observer(() => {
   // store hooks
   const { updateProject, currentProjectDetails } = useProject();
   const { projectEstimates, getProjectEstimateById } = useEstimate();
+  const { captureEvent } = useEventTracker();
 
   const editEstimate = (estimate: IEstimate) => {
     setEstimateFormOpen(true);
@@ -39,16 +41,22 @@ export const EstimatesList: React.FC = observer(() => {
   const disableEstimates = () => {
     if (!workspaceSlug || !projectId) return;
 
-    updateProject(workspaceSlug.toString(), projectId.toString(), { estimate: null }).catch((err) => {
-      const error = err?.error;
-      const errorString = Array.isArray(error) ? error[0] : error;
+    updateProject(workspaceSlug.toString(), projectId.toString(), { estimate: null })
+      .then(() =>
+        captureEvent(ESTIMATE_DISABLED, {
+          current_estimate_id: currentProjectDetails?.estimate,
+        })
+      )
+      .catch((err) => {
+        const error = err?.error;
+        const errorString = Array.isArray(error) ? error[0] : error;
 
-      setToast({
-        type: TOAST_TYPE.ERROR,
-        title: "Error!",
-        message: errorString ?? "Estimate could not be disabled. Please try again",
+        setToast({
+          type: TOAST_TYPE.ERROR,
+          title: "Error!",
+          message: errorString ?? "Estimate could not be disabled. Please try again",
+        });
       });
-    });
   };
 
   return (

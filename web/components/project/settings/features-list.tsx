@@ -5,6 +5,7 @@ import { FileText, Inbox } from "lucide-react";
 import { IProject } from "@plane/types";
 // ui
 import { ContrastIcon, DiceIcon, PhotoFilterIcon, ToggleSwitch, setPromiseToast } from "@plane/ui";
+import { E_FEATURES } from "@/constants/event-tracker";
 // hooks
 import { useEventTracker, useProject, useUser } from "@/hooks/store";
 
@@ -93,7 +94,7 @@ export const ProjectFeaturesList: FC<Props> = observer((props) => {
             onChange={() => {
               captureEvent(`Toggle ${feature.title.toLowerCase()}`, {
                 enabled: !currentProjectDetails?.[feature.property as keyof IProject],
-                element: "Project settings feature page",
+                element: E_FEATURES,
               });
               handleSubmit({
                 [feature.property]: !currentProjectDetails?.[feature.property as keyof IProject],

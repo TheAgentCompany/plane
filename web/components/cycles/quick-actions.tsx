@@ -8,6 +8,7 @@ import { ArchiveIcon, ContextMenu, CustomMenu, TContextMenuItem, TOAST_TYPE, set
 // components
 import { ArchiveCycleModal, CycleCreateUpdateModal, CycleDeleteModal } from "@/components/cycles";
 // constants
+import { CYCLE_ARCHIVED, CYCLE_RESTORED, E_CYCLES } from "@/constants/event-tracker";
 import { EUserProjectRoles } from "@/constants/project";
 // helpers
 import { cn } from "@/helpers/common.helper";
@@ -31,7 +32,7 @@ export const CycleQuickActions: React.FC<Props> = observer((props) => {
   const [archiveCycleModal, setArchiveCycleModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   // store hooks
-  const { setTrackElement } = useEventTracker();
+  const { setTrackElement, captureEvent } = useEventTracker();
   const {
     membership: { currentWorkspaceAllProjectsRole },
   } = useUser();
@@ -56,11 +57,17 @@ export const CycleQuickActions: React.FC<Props> = observer((props) => {
   const handleOpenInNewTab = () => window.open(`/${cycleLink}`, "_blank");
 
   const handleEditCycle = () => {
-    setTrackElement("Cycles page list layout");
+    setTrackElement(E_CYCLES);
     setUpdateModal(true);
   };
 
-  const handleArchiveCycle = () => setArchiveCycleModal(true);
+  const handleArchiveCycle = () => {
+    setArchiveCycleModal(true);
+    captureEvent(CYCLE_ARCHIVED, {
+      cycleId: cycleId,
+      element: E_CYCLES,
+    });
+  };
 
   const handleRestoreCycle = async () =>
     await restoreCycle(workspaceSlug, projectId, cycleId)
@@ -69,6 +76,10 @@ export const CycleQuickActions: React.FC<Props> = observer((props) => {
           type: TOAST_TYPE.SUCCESS,
           title: "Restore success",
           message: "Your cycle can be found in project cycles.",
+        });
+        captureEvent(CYCLE_RESTORED, {
+          cycleId: cycleId,
+          element: E_CYCLES,
         });
         router.push(`/${workspaceSlug}/projects/${projectId}/archives/cycles`);
       })
@@ -81,7 +92,7 @@ export const CycleQuickActions: React.FC<Props> = observer((props) => {
       );
 
   const handleDeleteCycle = () => {
-    setTrackElement("Cycles page list layout");
+    setTrackElement(E_CYCLES);
     setDeleteModal(true);
   };
 

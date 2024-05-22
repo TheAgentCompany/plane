@@ -8,7 +8,7 @@ import { TourRoot } from "@/components/onboarding";
 import { UserGreetingsView } from "@/components/user";
 // constants
 import { EmptyStateType } from "@/constants/empty-state";
-import { PRODUCT_TOUR_COMPLETED } from "@/constants/event-tracker";
+import { E_DASHBOARD_EMPTY_STATE, PRODUCT_TOUR_COMPLETED } from "@/constants/event-tracker";
 // helpers
 import { cn } from "@/helpers/common.helper";
 // hooks
@@ -88,7 +88,7 @@ export const WorkspaceDashboardView = observer(() => {
             <EmptyState
               type={EmptyStateType.WORKSPACE_DASHBOARD}
               primaryButtonOnClick={() => {
-                setTrackElement("Dashboard empty state");
+                setTrackElement(E_DASHBOARD_EMPTY_STATE);
                 toggleCreateProjectModal(true);
               }}
             />

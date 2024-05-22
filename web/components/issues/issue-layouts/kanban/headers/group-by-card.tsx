@@ -10,6 +10,7 @@ import { CustomMenu, TOAST_TYPE, setToast } from "@plane/ui";
 import { ExistingIssuesListModal } from "@/components/core";
 import { CreateUpdateIssueModal } from "@/components/issues";
 // constants
+import { E_KANBAN_LAYOUT } from "@/constants/event-tracker";
 // hooks
 import { useEventTracker } from "@/hooks/store";
 // types
@@ -154,7 +155,7 @@ export const HeaderGroupByCard: FC<IHeaderGroupByCard> = observer((props) => {
             >
               <CustomMenu.MenuItem
                 onClick={() => {
-                  setTrackElement("Kanban layout");
+                  setTrackElement(E_KANBAN_LAYOUT);
                   setIsOpen(true);
                 }}
               >
@@ -162,7 +163,7 @@ export const HeaderGroupByCard: FC<IHeaderGroupByCard> = observer((props) => {
               </CustomMenu.MenuItem>
               <CustomMenu.MenuItem
                 onClick={() => {
-                  setTrackElement("Kanban layout");
+                  setTrackElement(E_KANBAN_LAYOUT);
                   setOpenExistingIssueListModal(true);
                 }}
               >
@@ -173,7 +174,7 @@ export const HeaderGroupByCard: FC<IHeaderGroupByCard> = observer((props) => {
             <div
               className="flex h-[20px] w-[20px] flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-sm transition-all hover:bg-custom-background-80"
               onClick={() => {
-                setTrackElement("Kanban layout");
+                setTrackElement(E_KANBAN_LAYOUT);
                 setIsOpen(true);
               }}
             >

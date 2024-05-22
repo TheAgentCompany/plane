@@ -13,7 +13,7 @@ import {
   InboxIssueProperties,
 } from "@/components/inbox/modals/create-edit-modal";
 // constants
-import { ISSUE_CREATED } from "@/constants/event-tracker";
+import { INBOX_ISSUE_CREATED, getIssueEventPayload } from "@/constants/event-tracker";
 // helpers
 import { renderFormattedPayloadDate } from "@/helpers/date-time.helper";
 // hooks
@@ -43,7 +43,7 @@ export const InboxIssueCreateRoot: FC<TInboxIssueCreateRoot> = observer((props) 
   // refs
   const descriptionEditorRef = useRef<EditorRefApi>(null);
   // hooks
-  const { captureIssueEvent } = useEventTracker();
+  const { captureEvent } = useEventTracker();
   const { createInboxIssue } = useProjectInbox();
   const { getWorkspaceBySlug } = useWorkspace();
   const workspaceId = getWorkspaceBySlug(workspaceSlug)?.id;
@@ -83,14 +83,13 @@ export const InboxIssueCreateRoot: FC<TInboxIssueCreateRoot> = observer((props) 
           descriptionEditorRef?.current?.clearEditor();
           setFormData(defaultIssueData);
         }
-        captureIssueEvent({
-          eventName: ISSUE_CREATED,
-          payload: {
-            ...formData,
-            state: "SUCCESS",
-            element: "Inbox page",
-          },
-          path: router.pathname,
+        captureEvent(INBOX_ISSUE_CREATED, {
+          issue_id: res?.issue?.id,
+          properties: getIssueEventPayload({
+            eventName: INBOX_ISSUE_CREATED,
+            payload: res?.issue,
+          }),
+          state: "SUCCESS",
         });
         setToast({
           type: TOAST_TYPE.SUCCESS,
@@ -100,14 +99,12 @@ export const InboxIssueCreateRoot: FC<TInboxIssueCreateRoot> = observer((props) 
       })
       .catch((error) => {
         console.error(error);
-        captureIssueEvent({
-          eventName: ISSUE_CREATED,
-          payload: {
-            ...formData,
-            state: "FAILED",
-            element: "Inbox page",
-          },
-          path: router.pathname,
+        captureEvent(INBOX_ISSUE_CREATED, {
+          properties: getIssueEventPayload({
+            eventName: INBOX_ISSUE_CREATED,
+            payload: formData,
+          }),
+          state: "FAILED",
         });
         setToast({
           type: TOAST_TYPE.ERROR,

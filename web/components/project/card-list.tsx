@@ -6,6 +6,7 @@ import { ProjectCard } from "@/components/project";
 import { ProjectsLoader } from "@/components/ui";
 // constants
 import { EmptyStateType } from "@/constants/empty-state";
+import { E_PROJECT_EMPTY_STATE } from "@/constants/event-tracker";
 // hooks
 import { useCommandPalette, useEventTracker, useProject, useProjectFilter } from "@/hooks/store";
 // assets
@@ -24,7 +25,7 @@ export const ProjectCardList = observer(() => {
       <EmptyState
         type={EmptyStateType.WORKSPACE_PROJECTS}
         primaryButtonOnClick={() => {
-          setTrackElement("Project empty state");
+          setTrackElement(E_PROJECT_EMPTY_STATE);
           toggleCreateProjectModal(true);
         }}
       />

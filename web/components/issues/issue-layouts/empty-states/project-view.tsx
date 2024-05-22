@@ -3,6 +3,7 @@ import { PlusIcon } from "lucide-react";
 // components
 import { EmptyState } from "@/components/common";
 // constants
+import { E_VIEW_ISSUES_EMPTY_STATE } from "@/constants/event-tracker";
 import { EIssuesStoreType } from "@/constants/issue";
 import { EUserProjectRoles } from "@/constants/project";
 // hooks
@@ -32,7 +33,7 @@ export const ProjectViewEmptyState: React.FC = observer(() => {
                 text: "New issue",
                 icon: <PlusIcon className="h-3 w-3" strokeWidth={2} />,
                 onClick: () => {
-                  setTrackElement("View issue empty state");
+                  setTrackElement(E_VIEW_ISSUES_EMPTY_STATE);
                   toggleCreateIssueModal(true, EIssuesStoreType.PROJECT_VIEW);
                 },
               }

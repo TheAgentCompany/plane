@@ -35,17 +35,17 @@ const ProfilePreferencesThemePage: NextPageWithLayout = observer(() => {
     setTheme(themeOption.value);
     const updateCurrentUserThemePromise = updateUserTheme({ theme: themeOption.value });
 
-    setPromiseToast(updateCurrentUserThemePromise, {
-      loading: "Updating theme...",
-      success: {
-        title: "Success!",
-        message: () => "Theme updated successfully!",
-      },
-      error: {
-        title: "Error!",
-        message: () => "Failed to Update the theme",
-      },
-    });
+    // setPromiseToast(updateCurrentUserThemePromise, {
+    //   loading: "Updating theme...",
+    //   success: {
+    //     title: "Success!",
+    //     message: () => "Theme updated successfully!",
+    //   },
+    //   error: {
+    //     title: "Error!",
+    //     message: () => "Failed to Update the theme",
+    //   },
+    // });
   };
 
   return (

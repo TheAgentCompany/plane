@@ -189,7 +189,7 @@ export const IssueBlock = observer((props: IssueBlockProps) => {
         {!issue?.tempId ? (
           <>
             <IssueProperties
-              className="relative flex flex-wrap md:flex-grow md:flex-shrink-0 items-center gap-2 whitespace-nowrap"
+              className="relative flex flex-wrap items-center gap-2 whitespace-nowrap md:flex-shrink-0 md:flex-grow"
               issue={issue}
               isReadOnly={!canEditIssueProperties}
               updateIssue={updateIssue}

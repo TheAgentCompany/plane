@@ -235,3 +235,5 @@ ResetPasswordPage.getLayout = function getLayout(page: ReactElement) {
 };
 
 export default ResetPasswordPage;
+
+

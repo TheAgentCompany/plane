@@ -132,6 +132,7 @@ services:
       MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID}
       MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY}
 
+
   # Comment this if you already have a reverse proxy running
   proxy:
     container_name: proxy

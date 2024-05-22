@@ -15,7 +15,7 @@ import { Button, TOAST_TYPE, setToast } from "@plane/ui";
 import { EmptyState } from "@/components/common";
 import { PageHead } from "@/components/core";
 // constants
-import { MEMBER_ACCEPTED } from "@/constants/event-tracker";
+import { E_WORKSPACE_INVITATION, MEMBER_ACCEPTED } from "@/constants/event-tracker";
 import { USER_WORKSPACES_LIST } from "@/constants/fetch-keys";
 import { ROLE } from "@/constants/workspace";
 // helpers
@@ -88,12 +88,11 @@ const UserInvitationsPage: NextPageWithLayout = observer(() => {
         joinWorkspaceMetricGroup(redirectWorkspace?.id);
         captureEvent(MEMBER_ACCEPTED, {
           member_id: invitation?.id,
-          // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-          role: getUserRole(invitation?.role!),
+          role: invitation?.role ? getUserRole(invitation?.role) : undefined,
           project_id: undefined,
           accepted_from: "App",
           state: "SUCCESS",
-          element: "Workspace invitations page",
+          element: E_WORKSPACE_INVITATION,
         });
         updateUserProfile({ last_workspace_id: redirectWorkspace?.id })
           .then(() => {
@@ -116,7 +115,7 @@ const UserInvitationsPage: NextPageWithLayout = observer(() => {
           project_id: undefined,
           accepted_from: "App",
           state: "FAILED",
-          element: "Workspace invitations page",
+          element: E_WORKSPACE_INVITATION,
         });
         setToast({
           type: TOAST_TYPE.ERROR,

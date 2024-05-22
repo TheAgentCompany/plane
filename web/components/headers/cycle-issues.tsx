@@ -14,6 +14,17 @@ import { BreadcrumbLink } from "@/components/common";
 import { DisplayFiltersSelection, FiltersDropdown, FilterSelection, LayoutSelection } from "@/components/issues";
 import { ProjectLogo } from "@/components/project";
 // constants
+import {
+  DP_APPLIED,
+  DP_REMOVED,
+  E_CYCLE_ISSUES,
+  elementFromPath,
+  FILTER_APPLIED,
+  FILTER_REMOVED,
+  FILTER_SEARCHED,
+  LAYOUT_CHANGED,
+  LP_UPDATED,
+} from "@/constants/event-tracker";
 import { EIssueFilterType, EIssuesStoreType, ISSUE_DISPLAY_FILTERS_BY_LAYOUT } from "@/constants/issue";
 import { EUserProjectRoles } from "@/constants/project";
 // helpers
@@ -74,7 +85,7 @@ export const CycleIssuesHeader: React.FC = observer(() => {
   } = useIssues(EIssuesStoreType.CYCLE);
   const { currentProjectCycleIds, getCycleById } = useCycle();
   const { toggleCreateIssueModal } = useCommandPalette();
-  const { setTrackElement } = useEventTracker();
+  const { setTrackElement, captureEvent, captureIssuesFilterEvent, captureIssuesDisplayFilterEvent } = useEventTracker();
   const {
     membership: { currentProjectRole },
   } = useUser();
@@ -98,15 +109,20 @@ export const CycleIssuesHeader: React.FC = observer(() => {
   const handleLayoutChange = useCallback(
     (layout: TIssueLayouts) => {
       if (!workspaceSlug || !projectId) return;
-      updateFilters(workspaceSlug, projectId, EIssueFilterType.DISPLAY_FILTERS, { layout: layout }, cycleId);
+      updateFilters(workspaceSlug, projectId, EIssueFilterType.DISPLAY_FILTERS, { layout: layout }, cycleId).then(() =>
+        captureEvent(LAYOUT_CHANGED, {
+          layout: layout,
+          ...elementFromPath(router.asPath),
+        })
+      );
     },
-    [workspaceSlug, projectId, cycleId, updateFilters]
+    [workspaceSlug, projectId, cycleId, updateFilters, captureEvent, router.asPath]
   );
 
   const handleFiltersUpdate = useCallback(
     (key: keyof IIssueFilterOptions, value: string | string[]) => {
       if (!workspaceSlug || !projectId) return;
-      const newValues = issueFilters?.filters?.[key] ?? [];
+      const newValues = Array.from(issueFilters?.filters?.[key] ?? []);
 
       if (Array.isArray(value)) {
         // this validation is majorly for the filter start_date, target_date custom
@@ -119,25 +135,56 @@ export const CycleIssuesHeader: React.FC = observer(() => {
         else newValues.push(value);
       }
 
-      updateFilters(workspaceSlug, projectId, EIssueFilterType.FILTERS, { [key]: newValues }, cycleId);
+      const event = newValues.length > (issueFilters?.filters?.[key] ?? []).length ? FILTER_APPLIED : FILTER_REMOVED;
+      updateFilters(workspaceSlug, projectId, EIssueFilterType.FILTERS, { [key]: newValues }, cycleId).then(() =>
+        captureIssuesFilterEvent({
+          eventName: event,
+          payload: {
+            routePath: router.asPath,
+            filters: issueFilters,
+            filter_property: value,
+            filter_type: key,
+          },
+        })
+      );
     },
-    [workspaceSlug, projectId, cycleId, issueFilters, updateFilters]
+    [workspaceSlug, projectId, cycleId, issueFilters, updateFilters, captureIssuesFilterEvent, router.asPath]
   );
 
   const handleDisplayFilters = useCallback(
     (updatedDisplayFilter: Partial<IIssueDisplayFilterOptions>) => {
       if (!workspaceSlug || !projectId) return;
-      updateFilters(workspaceSlug, projectId, EIssueFilterType.DISPLAY_FILTERS, updatedDisplayFilter, cycleId);
+      updateFilters(workspaceSlug, projectId, EIssueFilterType.DISPLAY_FILTERS, updatedDisplayFilter, cycleId).then(
+        () =>
+          captureIssuesDisplayFilterEvent({
+            eventName: LP_UPDATED,
+            payload: {
+              property_type: Object.keys(updatedDisplayFilter).join(","),
+              property: Object.values(updatedDisplayFilter)?.[0],
+              routePath: router.asPath,
+              filters: issueFilters,
+            },
+          })
+      );
     },
-    [workspaceSlug, projectId, cycleId, updateFilters]
+    [workspaceSlug, projectId, cycleId, updateFilters, issueFilters, captureIssuesDisplayFilterEvent, router.asPath]
   );
 
   const handleDisplayProperties = useCallback(
     (property: Partial<IIssueDisplayProperties>) => {
       if (!workspaceSlug || !projectId) return;
-      updateFilters(workspaceSlug, projectId, EIssueFilterType.DISPLAY_PROPERTIES, property, cycleId);
+      updateFilters(workspaceSlug, projectId, EIssueFilterType.DISPLAY_PROPERTIES, property, cycleId).then(() =>
+        captureIssuesDisplayFilterEvent({
+          eventName: Object.values(property)?.[0] === true ? DP_APPLIED : DP_REMOVED,
+          payload: {
+            display_property: Object.keys(property).join(","),
+            routePath: router.asPath,
+            filters: issueFilters,
+          },
+        })
+      );
     },
-    [workspaceSlug, projectId, cycleId, updateFilters]
+    [workspaceSlug, projectId, cycleId, updateFilters, issueFilters, captureIssuesDisplayFilterEvent, router.asPath]
   );
 
   // derived values
@@ -245,6 +292,16 @@ export const CycleIssuesHeader: React.FC = observer(() => {
                 labels={projectLabels}
                 memberIds={projectMemberIds ?? undefined}
                 states={projectStates}
+                onSearchCapture={() =>
+                  captureIssuesFilterEvent({
+                    eventName: FILTER_SEARCHED,
+                    payload: {
+                      routePath: router.asPath,
+                      current_filters: issueFilters?.filters,
+                      layout: issueFilters?.displayFilters?.layout,
+                    },
+                  })
+                }
                 cycleViewDisabled={!currentProjectDetails?.cycle_view}
                 moduleViewDisabled={!currentProjectDetails?.module_view}
               />
@@ -272,7 +329,7 @@ export const CycleIssuesHeader: React.FC = observer(() => {
                 {!isCompletedCycle && (
                   <Button
                     onClick={() => {
-                      setTrackElement("Cycle issues page");
+                      setTrackElement(E_CYCLE_ISSUES);
                       toggleCreateIssueModal(true, EIssuesStoreType.CYCLE);
                     }}
                     size="sm"

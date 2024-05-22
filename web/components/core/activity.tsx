@@ -21,16 +21,20 @@ import {
 } from "lucide-react";
 import { IIssueActivity } from "@plane/types";
 import { Tooltip, BlockedIcon, BlockerIcon, RelatedIcon, LayersIcon, DiceIcon } from "@plane/ui";
+// constants
+import { ISSUE_OPENED, elementFromPath } from "@/constants/event-tracker";
 // helpers
 import { renderFormattedDate } from "@/helpers/date-time.helper";
 import { capitalizeFirstLetter } from "@/helpers/string.helper";
-import { useEstimate, useLabel } from "@/hooks/store";
+import { useEstimate, useLabel, useEventTracker } from "@/hooks/store";
 import { usePlatformOS } from "@/hooks/use-platform-os";
 // types
 
 export const IssueLink = ({ activity }: { activity: IIssueActivity }) => {
   const router = useRouter();
   const { workspaceSlug } = router.query;
+  // store hooks
+  const { captureEvent } = useEventTracker();
   const { isMobile } = usePlatformOS();
 
   return (
@@ -44,6 +48,13 @@ export const IssueLink = ({ activity }: { activity: IIssueActivity }) => {
           href={`${`/${workspaceSlug ?? activity.workspace_detail?.slug}/projects/${activity.project}/issues/${
             activity.issue
           }`}`}
+          onClick={() => {
+            captureEvent(ISSUE_OPENED, {
+              ...elementFromPath(router.asPath),
+              element_id: "activity",
+              mode: "detail",
+            });
+          }}
           target={activity.issue === null ? "_self" : "_blank"}
           rel={activity.issue === null ? "" : "noopener noreferrer"}
           className="inline items-center gap-1 font-medium text-custom-text-100 hover:underline"

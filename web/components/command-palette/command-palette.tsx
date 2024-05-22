@@ -14,6 +14,7 @@ import { CreatePageModal } from "@/components/pages";
 import { CreateProjectModal } from "@/components/project";
 import { CreateUpdateProjectViewModal } from "@/components/views";
 // constants
+import { E_SHORTCUT_KEY } from "@/constants/event-tracker";
 import { ISSUE_DETAILS } from "@/constants/fetch-keys";
 import { EIssuesStoreType } from "@/constants/issue";
 import { EUserProjectRoles } from "@/constants/project";
@@ -220,7 +221,7 @@ export const CommandPalette: FC = observer(() => {
           toggleSidebar();
         }
       } else if (!isAnyModalOpen) {
-        setTrackElement("Shortcut key");
+        setTrackElement(E_SHORTCUT_KEY);
         if (Object.keys(shortcutsList.global).includes(keyPressed)) shortcutsList.global[keyPressed].action();
         // workspace authorized actions
         else if (

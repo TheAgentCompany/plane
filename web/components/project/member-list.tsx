@@ -7,6 +7,8 @@ import { Button } from "@plane/ui";
 import { ProjectMemberListItem, SendProjectInvitationModal } from "@/components/project";
 // ui
 import { MembersSettingsLoader } from "@/components/ui";
+// constants
+import { E_PROJECT_MEMBERS } from "@/constants/event-tracker";
 import { useEventTracker, useMember } from "@/hooks/store";
 
 export const ProjectMemberList: React.FC = observer(() => {
@@ -49,7 +51,7 @@ export const ProjectMemberList: React.FC = observer(() => {
         <Button
           variant="primary"
           onClick={() => {
-            setTrackElement("PROJECT_SETTINGS_MEMBERS_PAGE_HEADER");
+            setTrackElement(E_PROJECT_MEMBERS);
             setInviteModal(true);
           }}
         >

@@ -3,10 +3,11 @@ import { observer } from "mobx-react";
 import { useRouter } from "next/router";
 import { IIssueDisplayProperties, TIssue } from "@plane/types";
 // types
+// constants
+import { E_SPREADSHEET_LAYOUT } from "@/constants/event-tracker";
 import { SPREADSHEET_PROPERTY_DETAILS } from "@/constants/spreadsheet";
 import { useEventTracker } from "@/hooks/store";
 import { WithDisplayPropertiesHOC } from "../properties/with-display-properties-HOC";
-// constants
 // components
 
 type Props = {
@@ -50,10 +51,10 @@ export const IssueColumn = observer((props: Props) => {
                 payload: {
                   ...issue,
                   ...data,
-                  element: "Spreadsheet layout",
+                  element: E_SPREADSHEET_LAYOUT,
                 },
                 updates: updates,
-                path: router.asPath,
+                routePath: router.asPath,
               });
             })
           }

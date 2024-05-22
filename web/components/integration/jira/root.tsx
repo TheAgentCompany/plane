@@ -11,7 +11,11 @@ import { IJiraImporterForm } from "@plane/types";
 // fetch keys
 // components
 import { Button, UserGroupIcon } from "@plane/ui";
+// constants
+import { JIRA_ISSUES_IMPORTED } from "@/constants/event-tracker";
 import { IMPORTER_SERVICES_LIST } from "@/constants/fetch-keys";
+// hooks
+import { useEventTracker } from "@/hooks/store";
 // assets
 import { JiraImporterService } from "@/services/integrations";
 import JiraLogo from "public/services/jira.svg";
@@ -61,9 +65,11 @@ export const JiraImporterRoot: React.FC = () => {
     state: "import-configure",
   });
   const [disableTopBarAfter, setDisableTopBarAfter] = useState<TJiraIntegrationSteps | null>(null);
-
+  // router
   const router = useRouter();
   const { workspaceSlug } = router.query;
+  // store hooks
+  const { captureEvent } = useEventTracker();
 
   const methods = useForm<IJiraImporterForm>({
     defaultValues: jiraFormDefaultValues,
@@ -81,6 +87,7 @@ export const JiraImporterRoot: React.FC = () => {
       .then(() => {
         mutate(IMPORTER_SERVICES_LIST(workspaceSlug.toString()));
         router.push(`/${workspaceSlug}/settings/imports`);
+        captureEvent(JIRA_ISSUES_IMPORTED);
       })
       .catch((err) => {
         console.error(err);

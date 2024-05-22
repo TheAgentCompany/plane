@@ -8,11 +8,14 @@ import { TOAST_TYPE, setToast } from "@plane/ui";
 // components
 import { CreateApiTokenForm, GeneratedTokenDetails } from "@/components/api-token";
 import { EModalPosition, EModalWidth, ModalCore } from "@/components/core";
-// fetch-keys
+// constants
+import { API_TOKEN_CREATED } from "@/constants/event-tracker";
 import { API_TOKENS_LIST } from "@/constants/fetch-keys";
 // helpers
 import { renderFormattedDate } from "@/helpers/date-time.helper";
 import { csvDownload } from "@/helpers/download.helper";
+// hooks
+import { useEventTracker } from "@/hooks/store";
 // services
 import { APITokenService } from "@/services/api_token.service";
 
@@ -32,6 +35,8 @@ export const CreateApiTokenModal: React.FC<Props> = (props) => {
   // router
   const router = useRouter();
   const { workspaceSlug } = router.query;
+  // store hooks
+  const { captureEvent } = useEventTracker();
 
   const handleClose = () => {
     onClose();
@@ -72,6 +77,11 @@ export const CreateApiTokenModal: React.FC<Props> = (props) => {
           },
           false
         );
+        captureEvent(API_TOKEN_CREATED, {
+          token_id: res.id,
+          expiry_date: data.expired_at ?? undefined,
+          never_exprires: res.expired_at ? false : true,
+        });
       })
       .catch((err) => {
         setToast({

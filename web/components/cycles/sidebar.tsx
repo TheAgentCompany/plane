@@ -26,7 +26,7 @@ import { ArchiveCycleModal, CycleDeleteModal } from "@/components/cycles";
 import { DateRangeDropdown } from "@/components/dropdowns";
 // constants
 import { CYCLE_STATUS } from "@/constants/cycle";
-import { CYCLE_UPDATED } from "@/constants/event-tracker";
+import { CYCLE_UPDATED, E_CYCLE_SIDEBAR, E_SIDEBAR  } from "@/constants/event-tracker";
 import { EIssueFilterType, EIssuesStoreType } from "@/constants/issue";
 import { EUserWorkspaceRoles } from "@/constants/workspace";
 // helpers
@@ -85,7 +85,7 @@ export const CycleDetailsSidebar: React.FC<Props> = observer((props) => {
           payload: {
             ...res,
             changed_properties: [changedProperty],
-            element: "Right side-peek",
+            element: E_SIDEBAR,
             state: "SUCCESS",
           },
         });
@@ -96,7 +96,7 @@ export const CycleDetailsSidebar: React.FC<Props> = observer((props) => {
           eventName: CYCLE_UPDATED,
           payload: {
             ...data,
-            element: "Right side-peek",
+            element: E_SIDEBAR,
             state: "FAILED",
           },
         });
@@ -340,7 +340,7 @@ export const CycleDetailsSidebar: React.FC<Props> = observer((props) => {
                 {!isCompleted && (
                   <CustomMenu.MenuItem
                     onClick={() => {
-                      setTrackElement("CYCLE_PAGE_SIDEBAR");
+                      setTrackElement(E_CYCLE_SIDEBAR);
                       setCycleDeleteModal(true);
                     }}
                   >

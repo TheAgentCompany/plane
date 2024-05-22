@@ -8,6 +8,7 @@ import { ModuleCardItem, ModuleListItem, ModulePeekOverview, ModulesListGanttCha
 import { CycleModuleBoardLayout, CycleModuleListLayout, GanttLayoutLoader } from "@/components/ui";
 // constants
 import { EmptyStateType } from "@/constants/empty-state";
+import { E_MODULES_EMPTY_STATE } from "@/constants/event-tracker";
 // hooks
 import { useCommandPalette, useEventTracker, useModule, useModuleFilter } from "@/hooks/store";
 import AllFiltersImage from "public/empty-state/module/all-filters.svg";
@@ -40,7 +41,7 @@ export const ModulesListView: React.FC = observer(() => {
       <EmptyState
         type={EmptyStateType.PROJECT_MODULE}
         primaryButtonOnClick={() => {
-          setTrackElement("Module empty state");
+          setTrackElement(E_MODULES_EMPTY_STATE);
           toggleCreateModuleModal(true);
         }}
       />
