@@ -12,7 +12,7 @@ import { useIssues, useUser } from "@/hooks/store";
 import { useIssuesActions } from "@/hooks/use-issues-actions";
 // ui
 // types
-import { IQuickActionProps } from "../list/list-view-types";
+import { IQuickActionProps, TRenderQuickActions } from "../list/list-view-types";
 import { handleDragDrop } from "./utils";
 
 type CalendarStoreType =
@@ -73,36 +73,40 @@ export const BaseCalendarRoot = observer((props: IBaseCalendarRoot) => {
     });
   };
 
+  const renderQuickActions: TRenderQuickActions = ({ issue, parentRef, customActionButton, placement }) => (
+    <QuickActions
+      parentRef={parentRef}
+      customActionButton={customActionButton}
+      issue={issue}
+      handleDelete={async () => removeIssue(issue.project_id, issue.id)}
+      handleUpdate={async (data) => updateIssue && updateIssue(issue.project_id, issue.id, data)}
+      handleRemoveFromView={async () => removeIssueFromView && removeIssueFromView(issue.project_id, issue.id)}
+      handleArchive={async () => archiveIssue && archiveIssue(issue.project_id, issue.id)}
+      handleRestore={async () => restoreIssue && restoreIssue(issue.project_id, issue.id)}
+      readOnly={!isEditingAllowed || isCompletedCycle}
+      placements={placement}
+    />
+  );
+
   return (
     <>
       <div className="h-full w-full overflow-hidden bg-custom-background-100 pt-4">
-        <CalendarChart
-          issuesFilterStore={issuesFilter}
-          issues={issueMap}
-          groupedIssueIds={groupedIssueIds}
-          layout={displayFilters?.calendar?.layout}
-          showWeekends={displayFilters?.calendar?.show_weekends ?? false}
-          quickActions={({ issue, parentRef, customActionButton, placement }) => (
-            <QuickActions
-              parentRef={parentRef}
-              customActionButton={customActionButton}
-              issue={issue}
-              handleDelete={async () => removeIssue(issue.project_id, issue.id)}
-              handleUpdate={async (data) => updateIssue && updateIssue(issue.project_id, issue.id, data)}
-              handleRemoveFromView={async () => removeIssueFromView && removeIssueFromView(issue.project_id, issue.id)}
-              handleArchive={async () => archiveIssue && archiveIssue(issue.project_id, issue.id)}
-              handleRestore={async () => restoreIssue && restoreIssue(issue.project_id, issue.id)}
-              readOnly={!isEditingAllowed || isCompletedCycle}
-              placements={placement}
-            />
-          )}
-          addIssuesToView={addIssuesToView}
-          quickAddCallback={issues.quickAddIssue}
-          viewId={viewId}
-          readOnly={!isEditingAllowed || isCompletedCycle}
-          updateFilters={updateFilters}
-          handleDragAndDrop={handleDragAndDrop}
-        />
+        <DragDropContext onDragEnd={onDragEnd}>
+          <CalendarChart
+            issuesFilterStore={issuesFilter}
+            issues={issueMap}
+            groupedIssueIds={groupedIssueIds}
+            layout={displayFilters?.calendar?.layout}
+            showWeekends={displayFilters?.calendar?.show_weekends ?? false}
+            quickActions={renderQuickActions}
+            addIssuesToView={addIssuesToView}
+            quickAddCallback={issues.quickAddIssue}
+            viewId={viewId}
+            readOnly={!isEditingAllowed || isCompletedCycle}
+            updateFilters={updateFilters}
+            handleDragAndDrop={handleDragAndDrop}
+          />
+        </DragDropContext>
       </div>
     </>
   );
