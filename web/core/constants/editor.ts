@@ -153,6 +153,34 @@ const LIST_ITEMS: ToolbarMenuItem<"bulleted-list" | "numbered-list" | "to-do-lis
     shortcut: ["Cmd", "Shift", "9"],
     editors: ["lite", "document"],
   },
+  {
+    key: "flat-bulleted-list",
+    name: "Flat bulleted list",
+    icon: List,
+    shortcut: ["Cmd", "Shift", "7"],
+    editors: ["lite", "document"],
+  },
+  {
+    key: "flat-numbered-list",
+    name: "Flat numbered list",
+    icon: ListOrdered,
+    shortcut: ["Cmd", "Shift", "8"],
+    editors: ["lite", "document"],
+  },
+  {
+    key: "flat-check-list",
+    name: "Flat to-do list",
+    icon: ListTodo,
+    shortcut: ["Cmd", "Shift", "9"],
+    editors: ["lite", "document"],
+  },
+  {
+    key: "flat-toggle-list",
+    name: "Flat Toggle list",
+    icon: ListTodo,
+    shortcut: ["Cmd", "Shift", "9"],
+    editors: ["lite", "document"],
+  },
 ];
 
 const USER_ACTION_ITEMS: ToolbarMenuItem<"quote" | "code">[] = [
