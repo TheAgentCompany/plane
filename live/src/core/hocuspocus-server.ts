@@ -4,6 +4,10 @@ import { v4 as uuidv4 } from "uuid";
 import { handleAuthentication } from "@/core/lib/authentication.js";
 // extensions
 import { getExtensions } from "@/core/extensions/index.js";
+import {
+  DocumentEventResponses,
+  TDocumentEventsServer,
+} from "@plane/editor/lib";
 // editor types
 import { TUserDetails } from "@plane/editor";
 // types
@@ -53,6 +57,12 @@ export const getHocusPocusServer = async () => {
         });
       } catch (error) {
         throw Error("Authentication unsuccessful!");
+      }
+    },
+    async onStateless({ payload, document }) {
+      const response = DocumentEventResponses[payload as TDocumentEventsServer];
+      if (response) {
+        document.broadcastStateless(response);
       }
     },
     extensions,

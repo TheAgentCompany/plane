@@ -14,6 +14,7 @@ import {
   TServerHandler,
 } from "@/types";
 import { TTextAlign } from "@/extensions";
+import { HocuspocusProviderWebsocket } from "@hocuspocus/provider";
 
 export type TEditorCommands =
   | "text"
@@ -121,7 +122,7 @@ export interface IEditorProps {
   onEnterKeyPress?: (e?: any) => void;
   placeholder?: string | ((isFocused: boolean, value: string) => string);
   tabIndex?: number;
-  value?: string | null; 
+  value?: string | null;
 }
 export interface ILiteTextEditor extends IEditorProps {
   extensions?: any[];
@@ -141,6 +142,7 @@ export interface ICollaborativeDocumentEditor
   realtimeConfig: TRealtimeConfig;
   serverHandler?: TServerHandler;
   user: TUserDetails;
+  socket: HocuspocusProviderWebsocket;
 }
 
 // read only editor props
@@ -168,6 +170,7 @@ export interface ICollaborativeDocumentReadOnlyEditor extends Omit<IReadOnlyEdit
   realtimeConfig: TRealtimeConfig;
   serverHandler?: TServerHandler;
   user: TUserDetails;
+  socket: HocuspocusProviderWebsocket;
 }
 
 export interface IDocumentReadOnlyEditor extends IReadOnlyEditorProps {

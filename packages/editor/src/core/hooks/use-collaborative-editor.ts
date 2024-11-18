@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import Collaboration from "@tiptap/extension-collaboration";
 import { IndexeddbPersistence } from "y-indexeddb";
@@ -58,21 +58,22 @@ export const useCollaborativeEditor = (props: TCollaborativeEditorProps) => {
     [id, realtimeConfig, serverHandler, user]
   );
 
+  // indexed db integration for offline support
+  const localProvider = useMemo(() => {
+    if (id) {
+      const localProvider = new IndexeddbPersistence(id, provider.document);
+      return localProvider;
+    }
+  }, [id, provider]);
+
   // destroy and disconnect connection on unmount
   useEffect(
     () => () => {
-      provider.destroy();
-      provider.disconnect();
+      provider?.destroy();
+      localProvider?.destroy();
     },
     [provider]
   );
-  // indexed db integration for offline support
-  useLayoutEffect(() => {
-    const localProvider = new IndexeddbPersistence(id, provider.document);
-    return () => {
-      localProvider?.destroy();
-    };
-  }, [provider, id]);
 
   const editor = useEditor({
     id,

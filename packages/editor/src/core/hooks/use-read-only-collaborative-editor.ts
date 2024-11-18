@@ -30,8 +30,8 @@ export const useReadOnlyCollaborativeEditor = (props: TReadOnlyCollaborativeEdit
   const provider = useMemo(
     () =>
       new HocuspocusProvider({
-        url: realtimeConfig.url,
         name: id,
+        url: realtimeConfig.url,
         token: JSON.stringify(user),
         parameters: realtimeConfig.queryParams,
         onAuthenticationFailed: () => {
@@ -47,23 +47,25 @@ export const useReadOnlyCollaborativeEditor = (props: TReadOnlyCollaborativeEdit
         },
         onSynced: () => setHasServerSynced(true),
       }),
-    [id, realtimeConfig, user]
+    [id, realtimeConfig, serverHandler, user.id]
   );
+
+  // indexed db integration for offline support
+  const localProvider = useMemo(() => {
+    if (id) {
+      const localProvider = new IndexeddbPersistence(id, provider.document);
+      return localProvider;
+    }
+  }, [id, provider]);
+
   // destroy and disconnect connection on unmount
   useEffect(
     () => () => {
       provider.destroy();
-      provider.disconnect();
+      localProvider?.destroy();
     },
     [provider]
   );
-  // indexed db integration for offline support
-  useLayoutEffect(() => {
-    const localProvider = new IndexeddbPersistence(id, provider.document);
-    return () => {
-      localProvider?.destroy();
-    };
-  }, [provider, id]);
 
   const editor = useReadOnlyEditor({
     editorProps,
