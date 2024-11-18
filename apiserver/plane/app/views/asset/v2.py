@@ -235,7 +235,10 @@ class WorkspaceFileAssetEndpoint(BaseAPIView):
             }
 
         # Project Cover
-        if entity_type == FileAsset.EntityTypeContext.PROJECT_COVER:
+        if (
+            entity_type == FileAsset.EntityTypeContext.PROJECT_COVER
+            or entity_type == FileAsset.EntityTypeContext.PROJECT_LOGO
+        ):
             return {
                 "project_id": entity_id,
             }
@@ -522,6 +525,7 @@ class StaticFileAssetEndpoint(BaseAPIView):
             FileAsset.EntityTypeContext.USER_COVER,
             FileAsset.EntityTypeContext.WORKSPACE_LOGO,
             FileAsset.EntityTypeContext.PROJECT_COVER,
+            FileAsset.EntityTypeContext.PROJECT_LOGO,
         ]:
             return Response(
                 {
@@ -562,7 +566,10 @@ class ProjectAssetEndpoint(BaseAPIView):
                 "workspace_id": entity_id,
             }
 
-        if entity_type == FileAsset.EntityTypeContext.PROJECT_COVER:
+        if (
+            entity_type == FileAsset.EntityTypeContext.PROJECT_COVER
+            or entity_type == FileAsset.EntityTypeContext.PROJECT_LOGO
+        ):
             return {
                 "project_id": entity_id,
             }
@@ -737,7 +744,6 @@ class ProjectAssetEndpoint(BaseAPIView):
 
 
 class ProjectBulkAssetEndpoint(BaseAPIView):
-
     @allow_permission([ROLE.ADMIN, ROLE.MEMBER, ROLE.GUEST])
     def post(self, request, slug, project_id, entity_id):
         asset_ids = request.data.get("asset_ids", [])
@@ -769,10 +775,20 @@ class ProjectBulkAssetEndpoint(BaseAPIView):
             )
 
         # Check if the asset is uploaded
-        if asset.entity_type == FileAsset.EntityTypeContext.PROJECT_COVER:
+        if (
+            asset.entity_type == FileAsset.EntityTypeContext.PROJECT_COVER
+            or asset.entity_type == FileAsset.EntityTypeContext.PROJECT_LOGO
+        ):
+            # Update the project cover image
             assets.update(
                 project_id=project_id,
             )
+
+            # Update the project cover image
+            if asset.entity_type == FileAsset.EntityTypeContext.PROJECT_COVER:
+                project = Project.objects.get(id=project_id)
+                project.cover_image_asset_id = asset.id
+                project.save()
 
         if asset.entity_type == FileAsset.EntityTypeContext.ISSUE_DESCRIPTION:
             assets.update(
