@@ -155,7 +155,7 @@ services:
 
   plane-minio:
     <<: *app-env
-    image: minio/minio:latest
+    image: minio/minio:RELEASE.2024-11-07T00-52-20Z
     pull_policy: if_not_present
     restart: unless-stopped
     command: server /export --console-address ":9090"
