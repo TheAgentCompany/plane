@@ -42,7 +42,7 @@ x-app-env: &app-env
 services:
   web:
     <<: *app-env
-    image: ghcr.io/theagentcompany/servers-plane-frontend:0.0.1
+    image: ghcr.io/theagentcompany/servers-plane-frontend:1.0.0
     platform: ${DOCKER_PLATFORM:-}
     pull_policy: if_not_present
     restart: unless-stopped
@@ -55,7 +55,7 @@ services:
 
   space:
     <<: *app-env
-    image: ghcr.io/theagentcompany/servers-plane-space:0.0.1
+    image: ghcr.io/theagentcompany/servers-plane-space:1.0.0
     platform: ${DOCKER_PLATFORM:-}
     pull_policy: if_not_present
     restart: unless-stopped
@@ -69,7 +69,7 @@ services:
 
   admin:
     <<: *app-env
-    image: ghcr.io/theagentcompany/servers-plane-admin:0.0.1
+    image: ghcr.io/theagentcompany/servers-plane-admin:1.0.0
     platform: ${DOCKER_PLATFORM:-}
     pull_policy: if_not_present
     restart: unless-stopped
@@ -82,7 +82,7 @@ services:
 
   api:
     <<: *app-env
-    image: ghcr.io/theagentcompany/servers-plane-backend:0.0.1
+    image: ghcr.io/theagentcompany/servers-plane-backend:1.0.0
     platform: ${DOCKER_PLATFORM:-}
     pull_policy: if_not_present
     restart: unless-stopped
@@ -97,7 +97,7 @@ services:
 
   worker:
     <<: *app-env
-    image: ghcr.io/theagentcompany/servers-plane-backend:0.0.1
+    image: ghcr.io/theagentcompany/servers-plane-backend:1.0.0
     platform: ${DOCKER_PLATFORM:-}
     pull_policy: if_not_present
     restart: unless-stopped
@@ -111,7 +111,7 @@ services:
 
   beat-worker:
     <<: *app-env
-    image: ghcr.io/theagentcompany/servers-plane-backend:0.0.1
+    image: ghcr.io/theagentcompany/servers-plane-backend:1.0.0
     platform: ${DOCKER_PLATFORM:-}
     pull_policy: if_not_present
     restart: unless-stopped
@@ -125,7 +125,7 @@ services:
 
   migrator:
     <<: *app-env
-    image: ghcr.io/theagentcompany/servers-plane-backend:0.0.1
+    image: ghcr.io/theagentcompany/servers-plane-backend:1.0.0
     platform: ${DOCKER_PLATFORM:-}
     pull_policy: if_not_present
     restart: "no"
@@ -165,7 +165,7 @@ services:
   # Comment this if you already have a reverse proxy running
   proxy:
     <<: *app-env
-    image: ghcr.io/theagentcompany/servers-plane-proxy:0.0.1
+    image: ghcr.io/theagentcompany/servers-plane-proxy:1.0.0
     platform: ${DOCKER_PLATFORM:-}
     pull_policy: if_not_present
     restart: unless-stopped
